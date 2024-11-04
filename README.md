@@ -76,6 +76,16 @@ The application handles several types of errors:
 
 This project follows Test Driven Development (TDD) practices. All new features should include corresponding tests.
 
+### Continuous Integration
+
+The project uses GitHub Actions for continuous integration, which:
+
+- Verifies code formatting
+- Runs linter checks
+- Executes all tests with mocked external services
+
+The CI pipeline runs on every push to the main branch and on pull requests.
+
 ## License
 
 MIT
