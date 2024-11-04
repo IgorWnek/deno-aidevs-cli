@@ -1,13 +1,14 @@
-# Web Page Fetcher CLI
+# Deno AI Devs CLI
 
 A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question answering.
 
 This is my project developed during the AI Devs 3 course in which I was a participant.
+
 More about AI Devs 3 [here](https://www.aidevs.pl/).
 
 This is entirely created by me and my AI assistants. 🤖🚀
 
-This is my first project in Deno. Why? For fun and learning.
+This is my first project in Deno. Why? 🤔 For fun and learning. 🧠
 
 ## Features
 
