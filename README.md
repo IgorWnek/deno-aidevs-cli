@@ -2,11 +2,18 @@
 
 A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question answering.
 
+This is my project developed during the AI Devs 3 course in which I was a participant.
+More about AI Devs 3 [here](https://www.aidevs.pl/).
+
+This is entirely created by me and my AI assistants. 🤖🚀
+
+This is my first project in Deno. Why? For fun and learning.
+
 ## Features
 
 - Fetch web page content from provided URL
 - Extract form questions and submit answers
-- AI-powered question answering using Vercel AI SDK
+- AI-powered question answering using Anthropic AI SDK (at the moment)
 - Handle login forms with credentials from environment variables
 - Error handling for invalid URLs and network issues
 
