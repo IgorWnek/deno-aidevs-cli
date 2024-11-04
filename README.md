@@ -1,38 +1,33 @@
 # Web Page Fetcher CLI
 
-A command-line tool to fetch and display web page content, with form submission capabilities.
+A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question answering.
 
 ## Features
 
 - Fetch web page content from provided URL
 - Extract form questions and submit answers
+- AI-powered question answering using Vercel AI SDK
 - Handle login forms with credentials from environment variables
 - Error handling for invalid URLs and network issues
 
-## Usage
+## Configuration
 
-First, create a `.env` file with your credentials:
+Create a `.env` file with your credentials:
 
 ```bash
 USERNAME=your_username
 PASSWORD=your_password
+ANTHROPIC_API_KEY=your_anthropic_api_key
+AI_MODEL=claude-3-5-haiku-20241022
 ```
 
-Then run the application:
+## Usage
 
 ```bash
 deno run --allow-net --allow-env --allow-read main.ts <url>
 ```
 
-Example:
-
-```bash
-deno run --allow-net --allow-env --allow-read main.ts https://example.com
-```
-
 ## Running Tests
-
-To run the tests:
 
 ```bash
 deno test --allow-net --allow-env --allow-read
@@ -42,11 +37,19 @@ deno test --allow-net --allow-env --allow-read
 
 - Deno 2.0 or higher
 - Internet connection
-- Environment variables for credentials
+- Environment variables for credentials and AI configuration
 - Required permissions:
   - `--allow-net` for network access
   - `--allow-env` for environment variables
   - `--allow-read` for .env file
+
+## Architecture
+
+The application is structured into several modules:
+
+- `main.ts`: Main application logic
+- `ai/client.ts`: AI client implementation using Vercel AI SDK
+- `services/question_processor.ts`: Question processing service
 
 ## Error Handling
 
@@ -58,10 +61,12 @@ The application handles several types of errors:
 - Missing environment variables
 - Form parsing errors
 - Form submission errors
+- AI processing errors
+- Invalid AI responses
 
 ## Development
 
-This project follows Test Driven Development (TDD) practices. All new features should include corresponding tests in the `main_test.ts` file.
+This project follows Test Driven Development (TDD) practices. All new features should include corresponding tests.
 
 ## License
 
