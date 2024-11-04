@@ -1,8 +1,28 @@
 {
   "tasks": {
-    "dev": "deno run --watch main.ts"
+    "test": "deno test --allow-net --allow-env --allow-read",
+    "fmt": "deno fmt",
+    "fmt:check": "deno fmt --check",
+    "lint": "deno lint",
+    "check": "deno fmt --check && deno lint"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"
+  },
+  "fmt": {
+    "lineWidth": 120,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "semiColons": true,
+    "proseWrap": "preserve",
+    "include": ["src/", "tests/"],
+    "exclude": ["node_modules/", "dist/"]
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["ban-untagged-todo"]
+    },
+    "exclude": ["node_modules/", "dist/"]
   }
 }
