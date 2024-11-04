@@ -1,23 +1,33 @@
 # Web Page Fetcher CLI
 
-A command-line tool to fetch and display web page content.
+A command-line tool to fetch and display web page content, with form submission capabilities.
 
 ## Features
 
 - Fetch web page content from provided URL
-- Display HTML content maintaining page structure
+- Extract form questions and submit answers
+- Handle login forms with credentials from environment variables
 - Error handling for invalid URLs and network issues
 
 ## Usage
 
+First, create a `.env` file with your credentials:
+
 ```bash
-deno run --allow-net main.ts <url>
+USERNAME=your_username
+PASSWORD=your_password
+```
+
+Then run the application:
+
+```bash
+deno run --allow-net --allow-env --allow-read main.ts <url>
 ```
 
 Example:
 
 ```bash
-deno run --allow-net main.ts https://example.com
+deno run --allow-net --allow-env --allow-read main.ts https://example.com
 ```
 
 ## Running Tests
@@ -25,22 +35,29 @@ deno run --allow-net main.ts https://example.com
 To run the tests:
 
 ```bash
-deno test --allow-net
+deno test --allow-net --allow-env --allow-read
 ```
 
 ## Requirements
 
 - Deno 2.0 or higher
 - Internet connection
-- `--allow-net` permission for network access
+- Environment variables for credentials
+- Required permissions:
+  - `--allow-net` for network access
+  - `--allow-env` for environment variables
+  - `--allow-read` for .env file
 
 ## Error Handling
 
 The application handles several types of errors:
+
 - Missing URL argument
 - Invalid URLs
 - Network connection issues
-- Non-200 HTTP responses
+- Missing environment variables
+- Form parsing errors
+- Form submission errors
 
 ## Development
 
