@@ -1,0 +1,13 @@
+# Rules for this project
+
+- Use Deno 2
+- Use TypeScript
+- Deno is used as both linter and code formatter
+- This is a CLI app which integrates with AI LLM models via API using SDKs (Anthropic at the moment)
+- We use Test Driven Development approach, you need to write tests for all the new functionality
+- Utilize best practices for writing clean and maintainable backend code (SOLID, YAGNI)
+- Use all the best practices to handle environment variables like API keys, secrets, etc.
+- Every new feature needs a documentation in the README.md file - remember about it
+- Readme.md should contain brief description of the feature, how to use it, how to run tests, etc.
+- Remember about correct Markdown formatting in readme files (lists and code blocks with blank lines around them).
+- Don't add unnecessary comments, keep the code clean and readable.
