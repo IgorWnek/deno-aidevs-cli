@@ -1,5 +1,7 @@
 import { load } from "https://deno.land/std/dotenv/mod.ts";
 import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import { AIClient, AIClientConfig } from "./ai/client.ts";
+import { processQuestion } from "./services/question_processor.ts";
 
 interface LoginCredentials {
   username: string;
@@ -61,6 +63,17 @@ async function getCredentials(): Promise<{ username: string; password: string }>
   return { username, password };
 }
 
+async function getAIConfig(): Promise<AIClientConfig> {
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  const model = Deno.env.get("AI_MODEL");
+
+  if (!apiKey || !model) {
+    throw new Error("ANTHROPIC_API_KEY and AI_MODEL environment variables must be set");
+  }
+
+  return { apiKey, model };
+}
+
 async function main() {
   const url = Deno.args[0];
   
@@ -71,14 +84,18 @@ async function main() {
   }
 
   try {
+    await load({ export: true });
+    
     // First fetch to get the question
     const html = await fetchWebPage(url);
     const question = extractQuestion(html);
     console.log("Question:", question);
 
-    // Generate random answer (you might want to implement proper logic here)
-    const answer = Math.floor(Math.random() * 100);
-    console.log("Generated answer:", answer);
+    // Process question with AI
+    const aiConfig = await getAIConfig();
+    const aiClient = new AIClient(aiConfig);
+    const answer = await processQuestion(question, aiClient);
+    console.log("AI generated answer:", answer);
 
     // Get credentials from environment
     const { username, password } = await getCredentials();
