@@ -1,6 +1,7 @@
 # Deno AI Devs CLI
 
-A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question answering.
+A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question
+answering.
 
 This is my project developed during the AI Devs 3 course in which I was a participant.
 
@@ -32,7 +33,7 @@ AI_MODEL=claude-3-5-haiku-20241022
 ## Usage
 
 ```bash
-deno run --allow-net --allow-env --allow-read main.ts <url>
+deno run --allow-net --allow-env --allow-read src/main.ts <url>
 ```
 
 ## Running Tests
@@ -55,9 +56,9 @@ deno test --allow-net --allow-env --allow-read
 
 The application is structured into several modules:
 
-- `main.ts`: Main application logic
-- `ai/client.ts`: AI client implementation using Vercel AI SDK
-- `services/question_processor.ts`: Question processing service
+- `src/main.ts`: Main application logic
+- `src/ai/client.ts`: AI client implementation using Vercel AI SDK
+- `src/services/question_processor.ts`: Question processing service
 
 ## Error Handling
 
