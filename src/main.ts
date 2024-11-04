@@ -63,7 +63,7 @@ async function getCredentials(): Promise<{ username: string; password: string }>
   return { username, password };
 }
 
-async function getAIConfig(): Promise<AIClientConfig> {
+function getAIConfig(): AIClientConfig {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
   const model = Deno.env.get('AI_MODEL');
 
