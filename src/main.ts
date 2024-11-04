@@ -1,7 +1,7 @@
-import { load } from "https://deno.land/std/dotenv/mod.ts";
-import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import { AIClient, AIClientConfig } from "./ai/client.ts";
-import { processQuestion } from "./services/question_processor.ts";
+import { load } from 'https://deno.land/std/dotenv/mod.ts';
+import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts';
+import { AIClient, AIClientConfig } from './ai/client.ts';
+import { processQuestion } from './services/question_processor.ts';
 
 interface LoginCredentials {
   username: string;
@@ -23,23 +23,23 @@ export async function fetchWebPage(url: string): Promise<string> {
 
 export function extractQuestion(html: string): string {
   const parser = new DOMParser();
-  const document = parser.parseFromString(html, "text/html");
-  if (!document) throw new Error("Failed to parse HTML");
-  
-  const questionElement = document.querySelector("#human-question");
-  if (!questionElement) throw new Error("Question element not found");
-  
+  const document = parser.parseFromString(html, 'text/html');
+  if (!document) throw new Error('Failed to parse HTML');
+
+  const questionElement = document.querySelector('#human-question');
+  if (!questionElement) throw new Error('Question element not found');
+
   return questionElement.textContent;
 }
 
 export async function submitLoginForm(url: string, credentials: LoginCredentials): Promise<string> {
   const formData = new FormData();
-  formData.append("username", credentials.username);
-  formData.append("password", credentials.password);
-  formData.append("answer", credentials.answer.toString());
+  formData.append('username', credentials.username);
+  formData.append('password', credentials.password);
+  formData.append('answer', credentials.answer.toString());
 
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     body: formData,
   });
 
@@ -52,23 +52,23 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
 
 async function getCredentials(): Promise<{ username: string; password: string }> {
   await load({ export: true });
-  
-  const username = Deno.env.get("USERNAME");
-  const password = Deno.env.get("PASSWORD");
-  
+
+  const username = Deno.env.get('USERNAME');
+  const password = Deno.env.get('PASSWORD');
+
   if (!username || !password) {
-    throw new Error("USERNAME and PASSWORD environment variables must be set");
+    throw new Error('USERNAME and PASSWORD environment variables must be set');
   }
-  
+
   return { username, password };
 }
 
 async function getAIConfig(): Promise<AIClientConfig> {
-  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
-  const model = Deno.env.get("AI_MODEL");
+  const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
+  const model = Deno.env.get('AI_MODEL');
 
   if (!apiKey || !model) {
-    throw new Error("ANTHROPIC_API_KEY and AI_MODEL environment variables must be set");
+    throw new Error('ANTHROPIC_API_KEY and AI_MODEL environment variables must be set');
   }
 
   return { apiKey, model };
@@ -76,7 +76,7 @@ async function getAIConfig(): Promise<AIClientConfig> {
 
 async function main() {
   const url = Deno.args[0];
-  
+
   if (!url) {
     console.error('Please provide a URL as an argument');
     console.error('Usage: deno run --allow-net --allow-env --allow-read main.ts <url>');
@@ -85,17 +85,17 @@ async function main() {
 
   try {
     await load({ export: true });
-    
+
     // First fetch to get the question
     const html = await fetchWebPage(url);
     const question = extractQuestion(html);
-    console.log("Question:", question);
+    console.log('Question:', question);
 
     // Process question with AI
     const aiConfig = await getAIConfig();
     const aiClient = new AIClient(aiConfig);
     const answer = await processQuestion(question, aiClient);
-    console.log("AI generated answer:", answer);
+    console.log('AI generated answer:', answer);
 
     // Get credentials from environment
     const { username, password } = await getCredentials();
@@ -107,7 +107,7 @@ async function main() {
       answer,
     });
 
-    console.log("Response:", response);
+    console.log('Response:', response);
   } catch (error) {
     console.error('Operation failed:', error);
     Deno.exit(1);

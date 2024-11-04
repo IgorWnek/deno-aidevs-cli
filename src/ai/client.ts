@@ -1,4 +1,4 @@
-import { Anthropic } from "npm:@anthropic-ai/sdk";
+import { Anthropic } from 'npm:@anthropic-ai/sdk';
 
 export interface AIClientConfig {
   apiKey: string;
@@ -23,8 +23,8 @@ export class AIClient {
 
   async chat(messages: ChatMessage[]): Promise<string> {
     // Convert our generic messages format to Anthropic's format
-    const systemMessage = messages.find(m => m.role === 'system')?.content || '';
-    const userMessage = messages.find(m => m.role === 'user')?.content || '';
+    const systemMessage = messages.find((m) => m.role === 'system')?.content || '';
+    const userMessage = messages.find((m) => m.role === 'user')?.content || '';
 
     const response = await this.client.messages.create({
       model: this.model,
@@ -43,7 +43,7 @@ export class AIClient {
     if (content.type !== 'text') {
       throw new Error('Unexpected response type from AI');
     }
-    
+
     return content.text;
   }
-} 
+}
