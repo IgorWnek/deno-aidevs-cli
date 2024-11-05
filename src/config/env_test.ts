@@ -28,6 +28,7 @@ Deno.test({
       PASSWORD: 'test123',
       ANTHROPIC_API_KEY: 'test-key',
       AI_MODEL: 'claude-3',
+      TARGET_COMPANY_VERIFICATION_ENDPOINT: 'https://your-verification-url.com/verification-endpoint',
     };
 
     // Mock environment getter
@@ -40,6 +41,7 @@ Deno.test({
       password: mockEnv.PASSWORD,
       anthropicApiKey: mockEnv.ANTHROPIC_API_KEY,
       aiModel: mockEnv.AI_MODEL,
+      targetCompanyVerificationEndpoint: mockEnv.TARGET_COMPANY_VERIFICATION_ENDPOINT,
     });
   },
   sanitizeOps: false,
