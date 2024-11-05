@@ -1,42 +1,44 @@
+import { loadEnvConfig } from './config/env.ts';
 import { runSolveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
+import { initializeRobotVerification } from './use-cases/trick-robot-verification/trick-robot-verification.ts';
 
-type UseCaseFunction = () => Promise<void>;
+type UseCase = (args: string[]) => Promise<void>;
 
-export const useCases: Record<string, UseCaseFunction> = {
-  'solve-web-question': runSolveWebQuestion,
-} as const;
+const useCases: Record<string, UseCase> = {
+  'solve-web-question': async (_args: string[]) => {
+    await runSolveWebQuestion();
+  },
+  'trick-robot': async (_args: string[]) => {
+    await initializeRobotVerification();
+  },
+};
 
-type UseCase = keyof typeof useCases;
-
-export function isValidUseCase(useCase: string): useCase is UseCase {
-  return useCase in useCases;
-}
-
-function printUsage() {
-  console.error('Usage: deno run --allow-net --allow-env --allow-read main.ts <use-case>');
-  console.error('\nAvailable use cases:');
-  console.error('  solve-web-question  - Solve question from web page');
-}
-
-async function main() {
-  const [useCase] = Deno.args;
-
-  if (!useCase) {
-    console.error('Please provide a use case');
-    printUsage();
-    Deno.exit(1);
-  }
-
-  if (!isValidUseCase(useCase)) {
-    console.error(`Invalid use case: ${useCase}`);
-    printUsage();
-    Deno.exit(1);
-  }
-
+export async function main() {
   try {
-    await useCases[useCase]();
-  } catch (error) {
-    console.error('Operation failed:', error);
+    const [useCase, ...args] = Deno.args;
+
+    if (!useCase) {
+      console.error('Please specify a use case. Available use cases:');
+      console.error(Object.keys(useCases).join('\n'));
+      Deno.exit(1);
+    }
+
+    const selectedUseCase = useCases[useCase];
+    if (!selectedUseCase) {
+      console.error(`Unknown use case: ${useCase}`);
+      console.error('Available use cases:');
+      console.error(Object.keys(useCases).join('\n'));
+      Deno.exit(1);
+    }
+
+    await loadEnvConfig();
+    await selectedUseCase(args);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error:', error.message);
+    } else {
+      console.error('Error:', String(error));
+    }
     Deno.exit(1);
   }
 }

@@ -6,6 +6,7 @@ export interface EnvConfig {
   password: string;
   anthropicApiKey: string;
   aiModel: string;
+  targetCompanyVerificationEndpoint: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -17,6 +18,7 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     password: Deno.env.get('PASSWORD'),
     anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'),
     aiModel: Deno.env.get('AI_MODEL'),
+    targetCompanyVerificationEndpoint: Deno.env.get('TARGET_COMPANY_VERIFICATION_ENDPOINT'),
   };
 
   const missingVars = Object.entries(requiredVars)
