@@ -30,6 +30,7 @@ Required environment variables:
 - PASSWORD
 - ANTHROPIC_API_KEY
 - AI_MODEL
+- TARGET_COMPANY_URL
 
 ## Project Structure
 
@@ -49,6 +50,20 @@ This project uses:
 - TypeScript
 - Test Driven Development
 - Anthropic AI SDK
+
+### Environment Variables
+
+The application requires the following environment variables:
+
+- `USERNAME` - Username for authentication
+- `PASSWORD` - Password for authentication
+- `ANTHROPIC_API_KEY` - Your Anthropic API key
+- `AI_MODEL` - The AI model to use
+- `TARGET_COMPANY_URL` - The target URL for web questions
+
+To set up your environment:
+1. Copy `.env.dist` to `.env`
+2. Fill in your values in the `.env` file
 
 ### Requirements
 
