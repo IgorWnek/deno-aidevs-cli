@@ -32,6 +32,16 @@ Required environment variables:
 - AI_MODEL
 - TARGET_COMPANY_URL
 
+## Robot Verification Feature
+
+The application includes a robot verification mechanism that communicates with a verification endpoint.
+
+### Configuration
+
+Add the following to your `.env` file:
+
+- `TARGET_COMPANY_VERIFICATION_ENDPOINT` - The complete URL for the verification endpoint
+
 ## Project Structure
 
 ```text
@@ -60,8 +70,10 @@ The application requires the following environment variables:
 - `ANTHROPIC_API_KEY` - Your Anthropic API key
 - `AI_MODEL` - The AI model to use
 - `TARGET_COMPANY_URL` - The target URL for web questions
+- `TARGET_COMPANY_VERIFICATION_ENDPOINT` - The complete URL for the verification endpoint
 
 To set up your environment:
+
 1. Copy `.env.dist` to `.env`
 2. Fill in your values in the `.env` file
 
