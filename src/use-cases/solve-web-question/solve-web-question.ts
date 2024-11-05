@@ -1,6 +1,7 @@
-import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts';
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
-import { AIClient, AIClientConfig } from '../../ai/client.ts';
+import { AIClient } from '../../ai/client.ts';
+import { loadEnvConfig } from '../../config/env.ts';
+import { createAIConfig } from '../../config/ai.ts';
 import { processQuestion } from '../../services/question_processor.ts';
 
 interface LoginCredentials {
@@ -50,57 +51,26 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
   return await response.text();
 }
 
-async function getCredentials(): Promise<{ username: string; password: string }> {
-  await load({ export: true });
-
-  const username = Deno.env.get('USERNAME');
-  const password = Deno.env.get('PASSWORD');
-
-  if (!username || !password) {
-    throw new Error('USERNAME and PASSWORD environment variables must be set');
-  }
-
-  return { username, password };
-}
-
-function getAIConfig(): AIClientConfig {
-  const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
-  const model = Deno.env.get('AI_MODEL');
-
-  if (!apiKey || !model) {
-    throw new Error('ANTHROPIC_API_KEY and AI_MODEL environment variables must be set');
-  }
-
-  return { apiKey, model };
-}
-
 export async function runSolveWebQuestion(
   customProcessQuestion?: (question: string, client: AIClient) => Promise<number>,
 ) {
   try {
-    await load({ export: true });
+    const config = await loadEnvConfig();
 
-    const url = Deno.env.get('TARGET_COMPANY_URL');
-    if (!url) {
-      throw new Error('TARGET_COMPANY_URL environment variable must be set');
-    }
-
-    const html = await fetchWebPage(url);
+    const html = await fetchWebPage(config.targetCompanyUrl);
     const question = extractQuestion(html);
     console.log('Question:', question);
 
-    const aiConfig = getAIConfig();
+    const aiConfig = createAIConfig(config);
     const aiClient = new AIClient(aiConfig);
 
     const questionProcessor = customProcessQuestion || processQuestion;
     const answer = await questionProcessor(question, aiClient);
     console.log('AI generated answer:', answer);
 
-    const { username, password } = await getCredentials();
-
-    const response = await submitLoginForm(url, {
-      username,
-      password,
+    const response = await submitLoginForm(config.targetCompanyUrl, {
+      username: config.username,
+      password: config.password,
       answer,
     });
 
