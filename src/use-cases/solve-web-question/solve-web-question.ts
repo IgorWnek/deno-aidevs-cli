@@ -1,5 +1,5 @@
-import { load } from 'https://deno.land/std/dotenv/mod.ts';
-import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts';
+import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts';
+import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
 import { AIClient, AIClientConfig } from '../../ai/client.ts';
 import { processQuestion } from '../../services/question_processor.ts';
 
@@ -74,9 +74,16 @@ function getAIConfig(): AIClientConfig {
   return { apiKey, model };
 }
 
-export async function runSolveWebQuestion(url: string) {
+export async function runSolveWebQuestion(
+  customProcessQuestion?: (question: string, client: AIClient) => Promise<number>,
+) {
   try {
     await load({ export: true });
+
+    const url = Deno.env.get('TARGET_COMPANY_URL');
+    if (!url) {
+      throw new Error('TARGET_COMPANY_URL environment variable must be set');
+    }
 
     const html = await fetchWebPage(url);
     const question = extractQuestion(html);
@@ -84,7 +91,9 @@ export async function runSolveWebQuestion(url: string) {
 
     const aiConfig = getAIConfig();
     const aiClient = new AIClient(aiConfig);
-    const answer = await processQuestion(question, aiClient);
+
+    const questionProcessor = customProcessQuestion || processQuestion;
+    const answer = await questionProcessor(question, aiClient);
     console.log('AI generated answer:', answer);
 
     const { username, password } = await getCredentials();
