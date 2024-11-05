@@ -1,5 +1,24 @@
-import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { extractQuestion, fetchWebPage, runSolveWebQuestion, submitLoginForm } from './solve-web-question.ts';
+import {
+  assertEquals,
+  assertRejects,
+} from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import {
+  extractQuestion,
+  fetchWebPage,
+  runSolveWebQuestion,
+  submitLoginForm,
+} from './solve-web-question.ts';
+import type { EnvConfig } from '../../config/env.ts';
+import { AIClient } from '../../ai/client.ts';
+
+const mockConfig: EnvConfig = {
+  targetCompanyUrl: 'https://example.com',
+  username: 'test-user',
+  password: 'test-pass',
+  anthropicApiKey: 'test-key',
+  aiModel: 'test-model',
+  targetCompanyVerificationEndpoint: 'https://example.com/verify',
+};
 
 Deno.test('fetchWebPage', async (t) => {
   await t.step('should fetch HTML content from a URL', async () => {
@@ -74,45 +93,52 @@ Deno.test('submitLoginForm', async (t) => {
 });
 
 Deno.test('runSolveWebQuestion', async () => {
-  // Mock environment variables
-  const env = {
-    'USERNAME': 'testuser',
-    'PASSWORD': 'testpass',
-    'ANTHROPIC_API_KEY': 'test-key',
-    'AI_MODEL': 'test-model',
-    'TARGET_COMPANY_URL': 'https://test.com',
-  };
-
-  for (const [key, value] of Object.entries(env)) {
-    Deno.env.set(key, value);
-  }
-
-  // Mock fetch responses
-  const mockHtml = '<div id="human-question">Test question</div>';
-  const mockSubmitResponse = 'Success';
-
-  let fetchCount = 0;
-  globalThis.fetch = () => {
-    fetchCount++;
-    // First fetch is for getting the question
-    if (fetchCount === 1) {
-      return Promise.resolve(new Response(mockHtml));
-    }
-    // Second fetch is for submitting the answer
-    return Promise.resolve(new Response(mockSubmitResponse));
-  };
-
-  // Mock process question function
-  const mockAnswer = 42;
-  const mockProcessQuestion = () => Promise.resolve(mockAnswer);
+  const originalFetch = globalThis.fetch;
+  const originalConsoleLog = console.log;
+  let capturedOutput = '';
 
   try {
-    await runSolveWebQuestion(mockProcessQuestion);
-    assertEquals(fetchCount, 2); // Verify both fetches were made
+    console.log = (...args: unknown[]) => {
+      capturedOutput += args.join(' ') + '\n';
+    };
+
+    globalThis.fetch = (_input: string | URL | Request, init?: RequestInit) => {
+      if (init?.method === 'POST') {
+        return Promise.resolve(
+          new Response('Success', {
+            status: 200,
+          }),
+        );
+      }
+      return Promise.resolve(
+        new Response(
+          '<div id="human-question">What is 2+2?</div>',
+          {
+            status: 200,
+          },
+        ),
+      );
+    };
+
+    const mockConfigLoader = () => Promise.resolve(mockConfig);
+    const mockQuestionProcessor = (_question: string, _client: AIClient) => Promise.resolve(4);
+
+    await runSolveWebQuestion(mockConfigLoader, mockQuestionProcessor);
+
+    assertEquals(
+      capturedOutput.includes('Question: What is 2+2?'),
+      true,
+    );
+    assertEquals(
+      capturedOutput.includes('AI generated answer: 4'),
+      true,
+    );
+    assertEquals(
+      capturedOutput.includes('Response: Success'),
+      true,
+    );
   } finally {
-    // Clean up
-    for (const key of Object.keys(env)) {
-      Deno.env.delete(key);
-    }
+    globalThis.fetch = originalFetch;
+    console.log = originalConsoleLog;
   }
 });
