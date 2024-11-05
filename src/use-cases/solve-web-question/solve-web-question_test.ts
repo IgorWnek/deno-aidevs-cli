@@ -1,13 +1,5 @@
-import {
-  assertEquals,
-  assertRejects,
-} from 'https://deno.land/std@0.208.0/assert/mod.ts';
-import {
-  extractQuestion,
-  fetchWebPage,
-  runSolveWebQuestion,
-  submitLoginForm,
-} from './solve-web-question.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import { extractQuestion, fetchWebPage, runSolveWebQuestion, submitLoginForm } from './solve-web-question.ts';
 import type { EnvConfig } from '../../config/env.ts';
 import { AIClient } from '../../ai/client.ts';
 

@@ -1,6 +1,6 @@
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
 import { AIClient } from '../../ai/client.ts';
-import { loadEnvConfig, type EnvConfig } from '../../config/env.ts';
+import { type EnvConfig, loadEnvConfig } from '../../config/env.ts';
 import { createAIConfig } from '../../config/ai.ts';
 import { processQuestion } from '../../services/question_processor.ts';
 
