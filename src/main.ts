@@ -1,113 +1,40 @@
-import { load } from 'https://deno.land/std/dotenv/mod.ts';
-import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts';
-import { AIClient, AIClientConfig } from './ai/client.ts';
-import { processQuestion } from './services/question_processor.ts';
+import { runSolveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
 
-interface LoginCredentials {
-  username: string;
-  password: string;
-  answer: number;
+type UseCaseFunction = (url: string) => Promise<void>;
+
+export const useCases: Record<string, UseCaseFunction> = {
+  'solve-web-question': runSolveWebQuestion,
+} as const;
+
+type UseCase = keyof typeof useCases;
+
+export function isValidUseCase(useCase: string): useCase is UseCase {
+  return useCase in useCases;
 }
 
-export async function fetchWebPage(url: string): Promise<string> {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.text();
-  } catch (error) {
-    throw error;
-  }
-}
-
-export function extractQuestion(html: string): string {
-  const parser = new DOMParser();
-  const document = parser.parseFromString(html, 'text/html');
-  if (!document) throw new Error('Failed to parse HTML');
-
-  const questionElement = document.querySelector('#human-question');
-  if (!questionElement) throw new Error('Question element not found');
-
-  return questionElement.textContent;
-}
-
-export async function submitLoginForm(url: string, credentials: LoginCredentials): Promise<string> {
-  const formData = new FormData();
-  formData.append('username', credentials.username);
-  formData.append('password', credentials.password);
-  formData.append('answer', credentials.answer.toString());
-
-  const response = await fetch(url, {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return await response.text();
-}
-
-async function getCredentials(): Promise<{ username: string; password: string }> {
-  await load({ export: true });
-
-  const username = Deno.env.get('USERNAME');
-  const password = Deno.env.get('PASSWORD');
-
-  if (!username || !password) {
-    throw new Error('USERNAME and PASSWORD environment variables must be set');
-  }
-
-  return { username, password };
-}
-
-function getAIConfig(): AIClientConfig {
-  const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
-  const model = Deno.env.get('AI_MODEL');
-
-  if (!apiKey || !model) {
-    throw new Error('ANTHROPIC_API_KEY and AI_MODEL environment variables must be set');
-  }
-
-  return { apiKey, model };
+function printUsage() {
+  console.error('Usage: deno run --allow-net --allow-env --allow-read main.ts <use-case> [...args]');
+  console.error('\nAvailable use cases:');
+  console.error('  solve-web-question <url>  - Solve question from web page');
 }
 
 async function main() {
-  const url = Deno.args[0];
+  const [useCase, ...args] = Deno.args;
 
-  if (!url) {
-    console.error('Please provide a URL as an argument');
-    console.error('Usage: deno run --allow-net --allow-env --allow-read main.ts <url>');
+  if (!useCase) {
+    console.error('Please provide a use case');
+    printUsage();
+    Deno.exit(1);
+  }
+
+  if (!isValidUseCase(useCase)) {
+    console.error(`Invalid use case: ${useCase}`);
+    printUsage();
     Deno.exit(1);
   }
 
   try {
-    await load({ export: true });
-
-    // First fetch to get the question
-    const html = await fetchWebPage(url);
-    const question = extractQuestion(html);
-    console.log('Question:', question);
-
-    // Process question with AI
-    const aiConfig = await getAIConfig();
-    const aiClient = new AIClient(aiConfig);
-    const answer = await processQuestion(question, aiClient);
-    console.log('AI generated answer:', answer);
-
-    // Get credentials from environment
-    const { username, password } = await getCredentials();
-
-    // Submit the form
-    const response = await submitLoginForm(url, {
-      username,
-      password,
-      answer,
-    });
-
-    console.log('Response:', response);
+    await useCases[useCase](args[0]);
   } catch (error) {
     console.error('Operation failed:', error);
     Deno.exit(1);
