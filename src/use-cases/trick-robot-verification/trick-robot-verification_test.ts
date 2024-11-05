@@ -27,7 +27,7 @@ Deno.test('initializeRobotVerification - successful request', async () => {
       assertEquals(
         url,
         mockConfig.targetCompanyVerificationEndpoint,
-        'Verification URL should match the configured endpoint'
+        'Verification URL should match the configured endpoint',
       );
       requestInit = init;
       const responseData = { status: 'ok', message: 'Verification successful' };

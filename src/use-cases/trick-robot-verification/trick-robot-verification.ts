@@ -1,4 +1,4 @@
-import { loadEnvConfig, type EnvConfig } from '../../config/env.ts';
+import { type EnvConfig, loadEnvConfig } from '../../config/env.ts';
 
 interface VerificationRequest {
   msgID: string;
@@ -6,7 +6,7 @@ interface VerificationRequest {
 }
 
 export async function initializeRobotVerification(
-  configLoader: () => Promise<EnvConfig> = loadEnvConfig
+  configLoader: () => Promise<EnvConfig> = loadEnvConfig,
 ): Promise<void> {
   try {
     const config = await configLoader();
