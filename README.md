@@ -1,7 +1,8 @@
 # Deno AI Devs CLI
 
-A command-line tool to fetch and display web page content, with form submission capabilities and AI-powered question
-answering.
+## About the Project
+
+A command-line tool for AI Developer Course challenges, built with Deno and TypeScript. It helps automate solving various programming challenges by integrating with AI models through their APIs.
 
 This is my project developed during the AI Devs 3 course in which I was a participant.
 
@@ -11,71 +12,70 @@ This is entirely created by me and my AI assistants. 🤖🚀
 
 This is my first project in Deno. Why? 🤔 For fun and learning. 🧠
 
-## Features
+## Available Use Cases
 
-- Fetch web page content from provided URL
-- Extract form questions and submit answers
-- AI-powered question answering using Anthropic AI SDK (at the moment)
-- Handle login forms with credentials from environment variables
-- Error handling for invalid URLs and network issues
+### solve-web-question
 
-## Configuration
+Fetches a question from a web page, processes it using AI, and submits the answer.
 
-Create a `.env` file with your credentials:
+Usage:
 
 ```bash
-USERNAME=your_username
-PASSWORD=your_password
-ANTHROPIC_API_KEY=your_anthropic_api_key
-AI_MODEL=claude-3-5-haiku-20241022
+deno run --allow-net --allow-env --allow-read src/main.ts solve-web-question <url>
 ```
 
-## Usage
+Required environment variables:
 
-```bash
-deno run --allow-net --allow-env --allow-read src/main.ts <url>
+- USERNAME
+- PASSWORD
+- ANTHROPIC_API_KEY
+- AI_MODEL
+
+## Project Structure
+
+```text
+src/
+  ├── ai/              # AI client implementation
+  ├── services/        # Shared services
+  └── use-cases/       # Individual use cases
+      └── solve-web-question/
 ```
 
-## Running Tests
+## Development
 
-```bash
-deno test --allow-net --allow-env --allow-read
-```
+This project uses:
 
-## Requirements
+- Deno 2
+- TypeScript
+- Test Driven Development
+- Anthropic AI SDK
+
+### Requirements
 
 - Deno 2.0 or higher
 - Internet connection
-- Environment variables for credentials and AI configuration
+- Environment variables configured in `.env` file
 - Required permissions:
   - `--allow-net` for network access
   - `--allow-env` for environment variables
   - `--allow-read` for .env file
 
-## Architecture
+### Running Tests
 
-The application is structured into several modules:
+```bash
+deno test --allow-net --allow-env --allow-read
+```
 
-- `src/main.ts`: Main application logic
-- `src/ai/client.ts`: AI client implementation using Vercel AI SDK
-- `src/services/question_processor.ts`: Question processing service
-
-## Error Handling
+### Error Handling
 
 The application handles several types of errors:
 
-- Missing URL argument
-- Invalid URLs
+- Missing or invalid arguments
 - Network connection issues
 - Missing environment variables
-- Form parsing errors
+- HTML parsing errors
 - Form submission errors
 - AI processing errors
-- Invalid AI responses
-
-## Development
-
-This project follows Test Driven Development (TDD) practices. All new features should include corresponding tests.
 
 ### Continuous Integration
 
@@ -83,9 +83,17 @@ The project uses GitHub Actions for continuous integration, which:
 
 - Verifies code formatting
 - Runs linter checks
-- Executes all tests with mocked external services
+- Executes all tests
 
 The CI pipeline runs on every push to the main branch and on pull requests.
+
+## Adding New Use Cases
+
+1. Create a new directory under `src/use-cases/`
+2. Implement the use case logic
+3. Add the use case to the `useCases` object in `src/main.ts`
+4. Update this README with usage instructions
+5. Add corresponding tests
 
 ## License
 
