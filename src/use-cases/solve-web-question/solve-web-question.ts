@@ -1,6 +1,6 @@
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
 import { AIClient } from '../../ai/client.ts';
-import { loadEnvConfig } from '../../config/env.ts';
+import { loadEnvConfig, type EnvConfig } from '../../config/env.ts';
 import { createAIConfig } from '../../config/ai.ts';
 import { processQuestion } from '../../services/question_processor.ts';
 
@@ -52,10 +52,11 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
 }
 
 export async function runSolveWebQuestion(
+  configLoader: () => Promise<EnvConfig> = loadEnvConfig,
   customProcessQuestion?: (question: string, client: AIClient) => Promise<number>,
 ) {
   try {
-    const config = await loadEnvConfig();
+    const config = await configLoader();
 
     const html = await fetchWebPage(config.targetCompanyUrl);
     const question = extractQuestion(html);
