@@ -1,5 +1,5 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
-import { extractQuestion, fetchWebPage, runSolveWebQuestion, submitLoginForm } from './solve-web-question.ts';
+import { extractQuestion, fetchWebPage, solveWebQuestion, submitLoginForm } from './solve-web-question.ts';
 import type { EnvConfig } from '../../config/env.ts';
 import { AIClient } from '../../ai/client.ts';
 
@@ -115,7 +115,7 @@ Deno.test('runSolveWebQuestion', async () => {
     const mockConfigLoader = () => Promise.resolve(mockConfig);
     const mockQuestionProcessor = (_question: string, _client: AIClient) => Promise.resolve(4);
 
-    await runSolveWebQuestion(mockConfigLoader, mockQuestionProcessor);
+    await solveWebQuestion(mockConfigLoader, mockQuestionProcessor);
 
     assertEquals(
       capturedOutput.includes('Question: What is 2+2?'),
