@@ -51,7 +51,7 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
   return await response.text();
 }
 
-export async function runSolveWebQuestion(
+export async function solveWebQuestion(
   configLoader: () => Promise<EnvConfig> = loadEnvConfig,
   customProcessQuestion?: (question: string, client: AIClient) => Promise<number>,
 ) {

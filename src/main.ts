@@ -1,15 +1,21 @@
 import { loadEnvConfig } from './config/env.ts';
-import { runSolveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
 import { initializeRobotVerification } from './use-cases/trick-robot-verification/trick-robot-verification.ts';
+import { AIClient } from './ai/client.ts';
+import { solveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
 
-type UseCase = (args: string[]) => Promise<void>;
+// Create AI client instance
+const config = await loadEnvConfig();
+const aiClient = new AIClient({
+  apiKey: config.anthropicApiKey,
+  model: config.aiModel,
+});
 
-const useCases: Record<string, UseCase> = {
+const useCases: Record<string, (args: string[]) => Promise<void>> = {
   'solve-web-question': async (_args: string[]) => {
-    await runSolveWebQuestion();
+    await solveWebQuestion(() => loadEnvConfig());
   },
-  'trick-robot': async (_args: string[]) => {
-    await initializeRobotVerification();
+  'trick-robot-verification': async () => {
+    await initializeRobotVerification(() => loadEnvConfig(), aiClient);
   },
 };
 
@@ -31,7 +37,6 @@ export async function main() {
       Deno.exit(1);
     }
 
-    await loadEnvConfig();
     await selectedUseCase(args);
   } catch (error: unknown) {
     if (error instanceof Error) {
