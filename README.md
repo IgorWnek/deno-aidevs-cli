@@ -45,6 +45,7 @@ Add the following to your `.env` file:
 #### How it Works
 
 This feature allows the system to handle robot verification challenges by:
+
 1. Processing incoming verification questions
 2. Using AI to generate responses based on specific knowledge
 3. Sending back verification responses
