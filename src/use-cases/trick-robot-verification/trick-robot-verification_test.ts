@@ -18,8 +18,8 @@ class MockAIClient extends AIClient {
     super({ apiKey: 'test-key', model: 'test-model' });
   }
 
-  override async chat(_messages: ChatMessage[]): Promise<string> {
-    return 'Krakow';
+  override chat(_messages: ChatMessage[]): Promise<string> {
+    return Promise.resolve('Krakow');
   }
 }
 
@@ -34,7 +34,7 @@ Deno.test('initializeRobotVerification - full verification flow', async () => {
       capturedOutput += args.join(' ') + '\n';
     };
 
-    globalThis.fetch = (input: string | URL | Request, init?: RequestInit) => {
+    globalThis.fetch = (_input: string | URL | Request, init?: RequestInit) => {
       requests.push(init!);
 
       // First response (initial verification)
