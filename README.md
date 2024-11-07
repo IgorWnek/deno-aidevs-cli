@@ -32,24 +32,24 @@ Required environment variables:
 - AI_MODEL
 - TARGET_COMPANY_URL
 
-## Robot Verification Feature
+### Robot Verification
 
 The application includes a robot verification mechanism that communicates with a verification endpoint.
 
-### Configuration
+#### Configuration
 
 Add the following to your `.env` file:
 
 - `TARGET_COMPANY_VERIFICATION_ENDPOINT` - The complete URL for the verification endpoint
 
-## Robot Verification Trick
+#### How it Works
 
 This feature allows the system to handle robot verification challenges by:
 1. Processing incoming verification questions
 2. Using AI to generate responses based on specific knowledge
 3. Sending back verification responses
 
-### Usage
+#### Usage
 
 The system handles verification requests in JSON format:
 
