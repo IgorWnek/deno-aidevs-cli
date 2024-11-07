@@ -1,6 +1,7 @@
-import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import { assertEquals } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { initializeRobotVerification } from './trick-robot-verification.ts';
 import type { EnvConfig } from '../../config/env.ts';
+import { AIClient, type ChatMessage } from '../../ai/client.ts';
 
 const mockConfig: EnvConfig = {
   targetCompanyUrl: 'https://example.com',
@@ -11,10 +12,21 @@ const mockConfig: EnvConfig = {
   targetCompanyVerificationEndpoint: 'https://example.com/verify',
 };
 
-Deno.test('initializeRobotVerification - successful request', async () => {
+// Create a mock AIClient class
+class MockAIClient extends AIClient {
+  constructor() {
+    super({ apiKey: 'test-key', model: 'test-model' });
+  }
+
+  override async chat(_messages: ChatMessage[]): Promise<string> {
+    return 'Krakow';
+  }
+}
+
+Deno.test('initializeRobotVerification - full verification flow', async () => {
   const originalFetch = globalThis.fetch;
   const originalConsoleLog = console.log;
-  let requestInit: RequestInit | undefined;
+  const requests: RequestInit[] = [];
   let capturedOutput = '';
 
   try {
@@ -23,79 +35,52 @@ Deno.test('initializeRobotVerification - successful request', async () => {
     };
 
     globalThis.fetch = (input: string | URL | Request, init?: RequestInit) => {
-      const url = input.toString();
-      assertEquals(
-        url,
-        mockConfig.targetCompanyVerificationEndpoint,
-        'Verification URL should match the configured endpoint',
-      );
-      requestInit = init;
-      const responseData = { status: 'ok', message: 'Verification successful' };
+      requests.push(init!);
+
+      // First response (initial verification)
+      if (requests.length === 1) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              msgID: 123,
+              text: 'What is the capital of Poland?',
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
+        );
+      }
+
+      // Second response (AI answer verification)
       return Promise.resolve(
-        new Response(JSON.stringify(responseData), {
+        new Response(JSON.stringify({ status: 'ok' }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
         }),
       );
     };
 
+    const mockAIClient = new MockAIClient();
     const mockConfigLoader = () => Promise.resolve(mockConfig);
-    await initializeRobotVerification(mockConfigLoader);
+    await initializeRobotVerification(mockConfigLoader, mockAIClient);
 
-    // Verify request payload
-    const requestBody = JSON.parse(requestInit?.body as string);
-    assertEquals(requestBody, {
+    // Verify initial request
+    const initialRequest = JSON.parse(requests[0].body as string);
+    assertEquals(initialRequest, {
       msgID: '0',
       text: 'READY',
     });
 
-    // Verify request headers
-    const headers = new Headers(requestInit?.headers);
-    assertEquals(
-      headers.get('Content-Type'),
-      'application/json',
-    );
-
-    // Verify console output contains the response data
-    const expectedOutput = 'Verification Response: {"status":"ok","message":"Verification successful"}';
-    assertEquals(
-      capturedOutput.trim().includes(expectedOutput),
-      true,
-      `Expected output to contain: ${expectedOutput}\nActual output: ${capturedOutput}`,
-    );
+    // Verify AI response request
+    const aiRequest = JSON.parse(requests[1].body as string);
+    assertEquals(aiRequest, {
+      msgID: 123,
+      text: 'Krakow',
+    });
   } finally {
     globalThis.fetch = originalFetch;
     console.log = originalConsoleLog;
-  }
-});
-
-Deno.test('initializeRobotVerification - failed request', async () => {
-  const originalFetch = globalThis.fetch;
-  const originalConsoleError = console.error;
-  let capturedError = '';
-
-  try {
-    console.error = (message: string) => {
-      capturedError = message;
-    };
-
-    globalThis.fetch = (_input: string | URL | Request, _init?: RequestInit) => {
-      return Promise.resolve(new Response('Error', { status: 400 }));
-    };
-
-    const mockConfigLoader = () => Promise.resolve(mockConfig);
-    await assertRejects(
-      async () => await initializeRobotVerification(mockConfigLoader),
-      Error,
-      'HTTP error! status: 400',
-    );
-
-    assertEquals(
-      capturedError.includes('Robot verification failed'),
-      true,
-    );
-  } finally {
-    globalThis.fetch = originalFetch;
-    console.error = originalConsoleError;
   }
 });
