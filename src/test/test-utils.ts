@@ -1,3 +1,5 @@
+import { AIClient } from '../ai/client.ts';
+
 export const mockEnvVars = {
   TARGET_COMPANY_URL: 'http://example.com',
   USERNAME: 'test-user',
@@ -33,3 +35,17 @@ export function withMockedEnv(fn: () => Promise<void>) {
     }
   };
 }
+
+export const mockConfigLoader = () => ({
+  username: 'test-user',
+  password: 'test-pass',
+  anthropicApiKey: 'test-key',
+  aiModel: 'test-model',
+  targetCompanyUrl: 'http://test.com',
+  targetCompanyVerificationEndpoint: 'http://test.com/verify',
+});
+
+export const mockAIClient = new AIClient({
+  apiKey: 'test-key',
+  model: 'test-model',
+});
