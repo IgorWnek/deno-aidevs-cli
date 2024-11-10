@@ -2,6 +2,7 @@ import { loadEnvConfig } from './config/env.ts';
 import { initializeRobotVerification } from './use-cases/trick-robot-verification/trick-robot-verification.ts';
 import { AIClient } from './ai/client.ts';
 import { solveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
+import { calibrationFileFix } from './use-cases/calibration-file-fix/calibration-file-fix.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -18,26 +19,30 @@ export async function main() {
       model: config.aiModel,
     });
 
-    const useCases: Record<string, (args: string[]) => Promise<void>> = {
-      'solve-web-question': async (_args: string[]) => {
-        await solveWebQuestion(() => loadEnvConfig());
-      },
-      'trick-robot-verification': async () => {
-        await initializeRobotVerification(() => loadEnvConfig(), aiClient);
-      },
-    };
+    const useCases = {
+      'trick-robot-verification': (_args: string[]) => initializeRobotVerification(() => loadEnvConfig(), aiClient),
+      'solve-web-question': (_args: string[]) => solveWebQuestion(() => loadEnvConfig()),
+      'calibration-file-fix': (_args: string[]) => calibrationFileFix(() => loadEnvConfig(), aiClient),
+    } as const;
+
+    console.log(`
+Available commands:
+- trick-robot-verification
+- solve-web-question
+- calibration-file-fix
+`);
 
     const [useCase, ...args] = Deno.args;
 
     if (!useCase) {
-      const availableCases = Object.keys(useCases).join('\n');
-      throw new UseCaseError(`Please specify a use case. Available use cases:\n${availableCases}`);
+      const availableCases = Object.keys(useCases).join('\n- ');
+      throw new UseCaseError(`Please specify a use case. Available use cases:\n- ${availableCases}`);
     }
 
-    const selectedUseCase = useCases[useCase];
+    const selectedUseCase = useCases[useCase as keyof typeof useCases];
     if (!selectedUseCase) {
-      const availableCases = Object.keys(useCases).join('\n');
-      throw new UseCaseError(`Unknown use case: ${useCase}\nAvailable use cases:\n${availableCases}`);
+      const availableCases = Object.keys(useCases).join('\n- ');
+      throw new UseCaseError(`Unknown use case: ${useCase}\nAvailable use cases:\n- ${availableCases}`);
     }
 
     await selectedUseCase(args);
