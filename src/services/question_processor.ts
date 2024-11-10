@@ -1,6 +1,6 @@
-import { AIClient, ChatMessage } from '../ai/client.ts';
+import { AiClient, ChatMessage } from '../ai/client.ts';
 
-export async function processQuestion(question: string, aiClient: AIClient): Promise<number> {
+export async function processQuestion(question: string, aiClient: AiClient): Promise<number> {
   const messages: ChatMessage[] = [
     {
       role: 'system',

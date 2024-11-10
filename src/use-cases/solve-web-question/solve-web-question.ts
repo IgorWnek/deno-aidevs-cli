@@ -1,7 +1,6 @@
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
-import { AIClient } from '../../ai/client.ts';
-import { type EnvConfig, loadEnvConfig } from '../../config/env.ts';
-import { createAIConfig } from '../../config/ai.ts';
+import { AiClient } from '../../ai/client.ts';
+import { type EnvConfig } from '../../config/env.ts';
 import { processQuestion } from '../../services/question_processor.ts';
 
 interface LoginCredentials {
@@ -52,18 +51,14 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
 }
 
 export async function solveWebQuestion(
-  configLoader: () => Promise<EnvConfig> = loadEnvConfig,
-  customProcessQuestion?: (question: string, client: AIClient) => Promise<number>,
+  config: EnvConfig,
+  aiClient: AiClient,
+  customProcessQuestion?: (question: string, aiClient: AiClient) => Promise<number>,
 ) {
   try {
-    const config = await configLoader();
-
     const html = await fetchWebPage(config.targetCompanyUrl);
     const question = extractQuestion(html);
     console.log('Question:', question);
-
-    const aiConfig = createAIConfig(config);
-    const aiClient = new AIClient(aiConfig);
 
     const questionProcessor = customProcessQuestion || processQuestion;
     const answer = await questionProcessor(question, aiClient);

@@ -7,6 +7,7 @@ export interface EnvConfig {
   anthropicApiKey: string;
   aiModel: string;
   targetCompanyVerificationEndpoint: string;
+  calibrationFileUrl: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -19,6 +20,7 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'),
     aiModel: Deno.env.get('AI_MODEL'),
     targetCompanyVerificationEndpoint: Deno.env.get('TARGET_COMPANY_VERIFICATION_ENDPOINT'),
+    calibrationFileUrl: Deno.env.get('CALIBRATION_FILE_URL'),
   };
 
   const missingVars = Object.entries(requiredVars)

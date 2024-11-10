@@ -10,7 +10,11 @@ export interface ChatMessage {
   content: string;
 }
 
-export class AIClient {
+export interface AiClient {
+  chat(messages: ChatMessage[]): Promise<string>;
+}
+
+export class AnthropicAiClient implements AiClient {
   private client: Anthropic;
   private model: string;
 
