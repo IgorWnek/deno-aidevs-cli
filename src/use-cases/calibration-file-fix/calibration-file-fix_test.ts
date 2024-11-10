@@ -1,39 +1,44 @@
-import { assertEquals } from 'https://deno.land/std/assert/assert_equals.ts';
+import { assertEquals } from 'https://deno.land/std@0.224.0/assert/assert_equals.ts';
 import { calibrationFileFix } from './calibration-file-fix.ts';
-import { withMockedEnv } from '../../test/test-utils.ts';
-import { AIClient } from '../../ai/client.ts';
+import { mockAIClient, mockConfig } from '../../test/test-utils.ts';
 
-const mockAIClient = new AIClient({
-  apiKey: 'test-key',
-  model: 'test-model',
+Deno.test('calibrationFileFix', async () => {
+  // Mock file operations
+  const originalReadTextFile = Deno.readTextFile;
+  const originalStat = Deno.stat;
+  const originalMkdir = Deno.mkdir;
+  const originalFetch = globalThis.fetch;
+
+  // Mock calibration file content
+  const mockCalibrationData = {
+    apikey: 'test-key',
+    description: 'test description',
+    copyright: 'test copyright',
+    'test-data': [
+      { question: '2+2', answer: 4 },
+      { question: '3+3', answer: 6 },
+    ],
+  };
+
+  Deno.readTextFile = () => Promise.resolve(JSON.stringify(mockCalibrationData));
+  Deno.stat = () => Promise.resolve({} as Deno.FileInfo);
+  Deno.mkdir = () => Promise.resolve();
+  globalThis.fetch = () => Promise.resolve(new Response(JSON.stringify(mockCalibrationData)));
+
+  const logs: string[] = [];
+  const originalLog = console.log;
+  console.log = (msg: string) => logs.push(msg);
+
+  try {
+    await calibrationFileFix(mockConfig, mockAIClient);
+    assertEquals(logs.length, 3); // 2 test cases + final count
+    assertEquals(logs[2], 'Number of test cases: 2');
+  } finally {
+    // Restore all mocked functions
+    console.log = originalLog;
+    Deno.readTextFile = originalReadTextFile;
+    Deno.stat = originalStat;
+    Deno.mkdir = originalMkdir;
+    globalThis.fetch = originalFetch;
+  }
 });
-
-Deno.test(
-  'calibrationFileFix should print WIP message',
-  withMockedEnv(async () => {
-    const chunks: string[] = [];
-    const originalConsoleLog = console.log;
-
-    try {
-      console.log = (msg: string) => {
-        chunks.push(msg);
-      };
-
-      await calibrationFileFix(
-        () => (Promise.resolve({
-          username: 'test-user',
-          password: 'test-pass',
-          anthropicApiKey: 'test-key',
-          aiModel: 'test-model',
-          targetCompanyUrl: 'http://test.com',
-          targetCompanyVerificationEndpoint: 'http://test.com/verify',
-        })),
-        mockAIClient,
-      );
-
-      assertEquals(chunks[0], 'Calibration File Fix - WIP');
-    } finally {
-      console.log = originalConsoleLog;
-    }
-  }),
-);

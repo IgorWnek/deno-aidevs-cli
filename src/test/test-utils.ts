@@ -1,4 +1,5 @@
-import { AIClient } from '../ai/client.ts';
+import { AiClient, ChatMessage } from '../ai/client.ts';
+import { EnvConfig } from '../config/env.ts';
 
 export const mockEnvVars = {
   TARGET_COMPANY_URL: 'http://example.com',
@@ -36,16 +37,16 @@ export function withMockedEnv(fn: () => Promise<void>) {
   };
 }
 
-export const mockConfigLoader = () => ({
+export const mockConfig: EnvConfig = {
   username: 'test-user',
   password: 'test-pass',
   anthropicApiKey: 'test-key',
   aiModel: 'test-model',
   targetCompanyUrl: 'http://test.com',
   targetCompanyVerificationEndpoint: 'http://test.com/verify',
-});
+  calibrationFileUrl: 'http://test.com/calibration.json',
+};
 
-export const mockAIClient = new AIClient({
-  apiKey: 'test-key',
-  model: 'test-model',
-});
+export const mockAIClient: AiClient = {
+  chat: (_messages: ChatMessage[]) => Promise.resolve('test'),
+};

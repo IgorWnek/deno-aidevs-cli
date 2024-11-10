@@ -1,16 +1,7 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { extractQuestion, fetchWebPage, solveWebQuestion, submitLoginForm } from './solve-web-question.ts';
-import type { EnvConfig } from '../../config/env.ts';
-import { AIClient } from '../../ai/client.ts';
-
-const mockConfig: EnvConfig = {
-  targetCompanyUrl: 'https://example.com',
-  username: 'test-user',
-  password: 'test-pass',
-  anthropicApiKey: 'test-key',
-  aiModel: 'test-model',
-  targetCompanyVerificationEndpoint: 'https://example.com/verify',
-};
+import { AiClient } from '../../ai/client.ts';
+import { mockAIClient, mockConfig } from '../../test/test-utils.ts';
 
 Deno.test('fetchWebPage', async (t) => {
   await t.step('should fetch HTML content from a URL', async () => {
@@ -112,10 +103,9 @@ Deno.test('runSolveWebQuestion', async () => {
       );
     };
 
-    const mockConfigLoader = () => Promise.resolve(mockConfig);
-    const mockQuestionProcessor = (_question: string, _client: AIClient) => Promise.resolve(4);
+    const mockQuestionProcessor = (_question: string, _client: AiClient) => Promise.resolve(4);
 
-    await solveWebQuestion(mockConfigLoader, mockQuestionProcessor);
+    await solveWebQuestion(mockConfig, mockAIClient, mockQuestionProcessor);
 
     assertEquals(
       capturedOutput.includes('Question: What is 2+2?'),

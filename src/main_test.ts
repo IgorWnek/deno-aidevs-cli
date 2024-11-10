@@ -1,35 +1,40 @@
-import { assertRejects } from 'https://deno.land/std/assert/mod.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { main, UseCaseError } from './main.ts';
-import { withMockedEnv } from './test/test-utils.ts';
 
-Deno.test({
-  name: 'main - no use case specified',
-  fn: withMockedEnv(async () => {
-    const originalArgs = Deno.args;
-    try {
-      (Deno.args as string[]) = [];
-      await assertRejects(
-        async () => await main(),
-        UseCaseError,
-      );
-    } finally {
-      (Deno.args as string[]) = originalArgs;
-    }
-  }),
+async function withArgs<T>(args: string[], fn: () => Promise<T>): Promise<T> {
+  const originalArgs = Deno.args;
+  try {
+    Object.defineProperty(Deno, 'args', {
+      value: args,
+      configurable: true,
+    });
+    return await fn();
+  } finally {
+    Object.defineProperty(Deno, 'args', {
+      value: originalArgs,
+      configurable: true,
+    });
+  }
+}
+
+Deno.test('main - no use case specified', async () => {
+  await withArgs([], async () => {
+    const error = await assertRejects(
+      () => main(),
+      UseCaseError,
+      'Please specify a use case',
+    );
+    assertEquals(error instanceof UseCaseError, true);
+  });
 });
 
-Deno.test({
-  name: 'main - invalid use case',
-  fn: withMockedEnv(async () => {
-    const originalArgs = Deno.args;
-    try {
-      (Deno.args as string[]) = ['invalid-use-case'];
-      await assertRejects(
-        async () => await main(),
-        UseCaseError,
-      );
-    } finally {
-      (Deno.args as string[]) = originalArgs;
-    }
-  }),
+Deno.test('main - invalid use case', async () => {
+  await withArgs(['invalid-use-case'], async () => {
+    const error = await assertRejects(
+      () => main(),
+      UseCaseError,
+      'Unknown use case: invalid-use-case',
+    );
+    assertEquals(error instanceof UseCaseError, true);
+  });
 });
