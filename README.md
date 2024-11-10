@@ -14,9 +14,9 @@ This is my first project in Deno. Why? 🤔 For fun and learning. 🧠
 
 ## Available Use Cases
 
-### solve-web-question
-
-Fetches a question from a web page, processes it using AI, and submits the answer.
+1. **Trick Robot Verification** - Helps bypass robot verification challenges
+2. **Solve Web Question** - Assists in solving web-based questions
+3. **Calibration File Fix** - [WIP] Helps with calibration file fixes
 
 Usage:
 
