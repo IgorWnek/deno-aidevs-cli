@@ -3,80 +3,48 @@ import { assertExists } from 'https://deno.land/std@0.224.0/assert/assert_exists
 import { FileService } from './file-service.ts';
 
 Deno.test('FileService', async (t) => {
-  const fileService = new FileService();
-  const tmpDir = new URL('../../tmp', import.meta.url).pathname;
+  const testTmpBase = `.test-${crypto.randomUUID()}`;
+  const fileService = new FileService(testTmpBase);
 
-  await t.step('creates tmp directory if it does not exist', async () => {
+  // Cleanup helper function
+  const cleanup = async () => {
     try {
-      await Deno.remove(tmpDir, { recursive: true });
+      await Deno.remove(testTmpBase, { recursive: true });
     } catch {
       // Directory might not exist, ignore error
     }
+  };
 
-    await fileService.ensureTmpDirectory();
+  // Setup step - runs first
+  await cleanup();
+
+  await t.step('creates tmp directory if it does not exist', async () => {
+    const tmpDir = await fileService.ensureTmpDirectory();
     const stat = await Deno.stat(tmpDir);
     assertExists(stat);
     assertEquals(stat.isDirectory, true);
   });
 
-  await t.step('does not throw when tmp directory already exists', async () => {
-    await fileService.ensureTmpDirectory();
-    const stat = await Deno.stat(tmpDir);
-    assertExists(stat);
-    assertEquals(stat.isDirectory, true);
-  });
-
-  await t.step('downloads and saves file', async () => {
-    const mockUrl = 'https://example.com/test.json';
+  await t.step('saves and reads file correctly', async () => {
+    type TestData = { test: string };
     const filename = 'test.json';
-    const mockData = '{"test": "data"}';
+    const testData: TestData = { test: 'data' };
 
-    const originalFetch = globalThis.fetch;
-    globalThis.fetch = () =>
-      Promise.resolve(
-        new Response(mockData, {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
-      );
-
-    try {
-      const filePath = await fileService.downloadAndSaveFile(mockUrl, filename);
-      const content = await Deno.readTextFile(filePath);
-      assertEquals(content, mockData);
-    } finally {
-      globalThis.fetch = originalFetch;
-      try {
-        await Deno.remove(`${tmpDir}/${filename}`);
-      } catch {
-        // Ignore cleanup errors
-      }
-    }
+    await fileService.saveFile(filename, JSON.stringify(testData));
+    const readData = await fileService.readFile<TestData>(filename);
+    
+    assertEquals(readData, testData);
   });
 
-  await t.step('handles download errors', async () => {
-    const mockUrl = 'https://example.com/error.json';
-    const filename = 'error.json';
-
-    const originalFetch = globalThis.fetch;
-    globalThis.fetch = () =>
-      Promise.resolve(
-        new Response('Not Found', {
-          status: 404,
-        }),
-      );
-
+  await t.step('throws when reading non-existent file', async () => {
     try {
-      await fileService.downloadAndSaveFile(mockUrl, filename);
-      throw new Error('Should have thrown an error');
+      await fileService.readFile<unknown>('non-existent.json');
+      throw new Error('Should have thrown');
     } catch (error) {
-      if (error instanceof Error) {
-        assertEquals(error.message, 'Failed to download file: Not Found');
-      } else {
-        throw error;
-      }
-    } finally {
-      globalThis.fetch = originalFetch;
+      assertEquals(error instanceof Deno.errors.NotFound, true);
     }
   });
+
+  // Cleanup step - runs last
+  await t.step('cleanup', cleanup);
 });
