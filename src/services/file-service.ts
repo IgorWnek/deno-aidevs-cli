@@ -2,9 +2,7 @@ export class FileService {
   private readonly tmpDir: string;
 
   constructor(basePath?: string) {
-    this.tmpDir = basePath 
-      ? `${basePath}/tmp`
-      : new URL('../../tmp', import.meta.url).pathname;
+    this.tmpDir = basePath ? `${basePath}/tmp` : new URL('../../tmp', import.meta.url).pathname;
   }
 
   async ensureTmpDirectory(): Promise<string> {

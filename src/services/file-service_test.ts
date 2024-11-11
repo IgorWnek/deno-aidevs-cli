@@ -32,7 +32,7 @@ Deno.test('FileService', async (t) => {
 
     await fileService.saveFile(filename, JSON.stringify(testData));
     const readData = await fileService.readFile<TestData>(filename);
-    
+
     assertEquals(readData, testData);
   });
 
