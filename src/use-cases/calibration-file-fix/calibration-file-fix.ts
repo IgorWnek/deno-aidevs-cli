@@ -2,9 +2,18 @@ import { EnvConfig } from '../../config/env.ts';
 import { AiClient } from '../../ai/client.ts';
 import { FileService } from '../../services/file-service.ts';
 
+interface TestCase {
+  // Question
+  q: string;
+
+  // Answer
+  a: string;
+}
+
 interface TestData {
   question: string;
   answer: number;
+  test?: TestCase;
 }
 
 interface CalibrationFile {
