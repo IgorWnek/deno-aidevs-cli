@@ -1,33 +1,34 @@
 export class FileService {
   private readonly tmpDir: string;
 
-  constructor() {
-    this.tmpDir = new URL('../../tmp', import.meta.url).pathname;
+  constructor(basePath?: string) {
+    this.tmpDir = basePath 
+      ? `${basePath}/tmp`
+      : new URL('../../tmp', import.meta.url).pathname;
   }
 
-  async ensureTmpDirectory(): Promise<void> {
-    const exists = await this.directoryExists(this.tmpDir);
-    if (!exists) {
-      await Deno.mkdir(this.tmpDir);
-    }
-  }
-
-  private async directoryExists(path: string): Promise<boolean> {
+  async ensureTmpDirectory(): Promise<string> {
     try {
-      const stat = await Deno.stat(path);
-      return stat.isDirectory;
+      const stat = await Deno.stat(this.tmpDir);
+      if (!stat.isDirectory) {
+        throw new Error('tmp path exists but is not a directory');
+      }
     } catch {
-      return false;
+      await Deno.mkdir(this.tmpDir, { recursive: true });
     }
+    return this.tmpDir;
   }
 
-  async downloadAndSaveFile(url: string, filename: string): Promise<string> {
-    await this.ensureTmpDirectory();
-    const response = await fetch(url);
-    const data = await response.text();
-    const filePath = `${this.tmpDir}/${filename}`;
+  async saveFile(filename: string, data: string): Promise<void> {
+    const tmpDir = await this.ensureTmpDirectory();
+    const filePath = `${tmpDir}/${filename}`;
     await Deno.writeTextFile(filePath, data);
+  }
 
-    return filePath;
+  async readFile<T>(filename: string): Promise<T> {
+    const tmpDir = await this.ensureTmpDirectory();
+    const filePath = `${tmpDir}/${filename}`;
+    const content = await Deno.readTextFile(filePath);
+    return JSON.parse(content) as T;
   }
 }
