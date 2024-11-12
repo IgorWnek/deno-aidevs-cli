@@ -8,6 +8,8 @@ export interface EnvConfig {
   aiModel: string;
   targetCompanyVerificationEndpoint: string;
   calibrationFileUrl: string;
+  aiDevsApiKey: string;
+  aiDevsVerificationUrl: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -21,6 +23,8 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     aiModel: Deno.env.get('AI_MODEL'),
     targetCompanyVerificationEndpoint: Deno.env.get('TARGET_COMPANY_VERIFICATION_ENDPOINT'),
     calibrationFileUrl: Deno.env.get('CALIBRATION_FILE_URL'),
+    aiDevsApiKey: Deno.env.get('AI_DEVS_API_KEY'),
+    aiDevsVerificationUrl: Deno.env.get('AI_DEVS_VERIFICATION_URL'),
   };
 
   const missingVars = Object.entries(requiredVars)
