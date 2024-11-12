@@ -4,6 +4,7 @@ import { AnthropicAiClient } from './ai/client.ts';
 import { solveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
 import { calibrationFileFix } from './use-cases/calibration-file-fix/calibration-file-fix.ts';
 import { FileService } from './services/file-service.ts';
+import { CalculateResultService } from './use-cases/calibration-file-fix/services/calculate-result-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -34,7 +35,7 @@ export async function main() {
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, aiClient),
     'solve-web-question': (_args: string[]) => solveWebQuestion(config, aiClient),
-    'calibration-file-fix': (_args: string[]) => calibrationFileFix(config, aiClient, new FileService()),
+    'calibration-file-fix': (_args: string[]) => calibrationFileFix(config, aiClient, new FileService(), new CalculateResultService()),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];
