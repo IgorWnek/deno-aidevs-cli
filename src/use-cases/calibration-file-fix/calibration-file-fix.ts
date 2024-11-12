@@ -3,6 +3,7 @@ import { AiClient, ChatMessage } from '../../ai/client.ts';
 import { FileService } from '../../services/file-service.ts';
 import { CalculateResultService } from './services/calculate-result-service.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
+import { questionSolverPrompt } from '../../prompts/question-solver-prompt.ts';
 
 export interface TestCase {
   q: string;
@@ -51,19 +52,8 @@ export async function calibrationFileFix(
 
     if (testDataSet?.test) {
       const question = testDataSet.test.q;
-      const systemMessage = `
-You are a question solver. You are given a question and you try to answer it correctly with as few words as possible.
-You never explain your answer, you just give the answer.
-Example:
-
-Question: What is the capital of Germany?
-Answer: Berlin
-
-Question: What color is the sky?
-Answer: Blue
-      `;
       const messages: ChatMessage[] = [
-        { role: 'system', content: systemMessage },
+        { role: 'system', content: questionSolverPrompt },
         { role: 'user', content: question },
       ];
       console.log(`Test question: ${question}`);
