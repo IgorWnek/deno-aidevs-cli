@@ -2,6 +2,7 @@ import { EnvConfig } from '../../config/env.ts';
 import { AiClient, ChatMessage } from '../../ai/client.ts';
 import { FileService } from '../../services/file-service.ts';
 import { CalculateResultService } from './services/calculate-result-service.ts';
+import { VerificationApiClient } from '../../clients/verification-api-client.ts';
 
 export interface TestCase {
   q: string;
@@ -21,11 +22,6 @@ export interface CalibrationFile {
   'test-data': TestData[];
 }
 
-interface VerificationApiResponse {
-  code: number;
-  message: string;
-}
-
 const CALIBRATION_FILENAME = 'calibration.json';
 
 export async function calibrationFileFix(
@@ -33,6 +29,7 @@ export async function calibrationFileFix(
   aiClient: AiClient,
   fileService: FileService,
   calculateResult: CalculateResultService,
+  verificationClient: VerificationApiClient,
 ): Promise<void> {
   let calibrationData: CalibrationFile;
 
@@ -94,16 +91,7 @@ Answer: Blue
   calibrationData['test-data'] = fixedTestData;
   calibrationData.apikey = config.aiDevsApiKey;
 
-  const response = await fetch(config.aiDevsVerificationUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      task: 'JSON',
-      apikey: config.aiDevsApiKey,
-      answer: calibrationData,
-    }),
-  });
-
-  const result = await response.json() as VerificationApiResponse;
+  const result = await verificationClient.verify('JSON', calibrationData);
 
   console.log(`Number of test cases: ${count}`);
   console.log(`Verification result: \ncode: ${result.code}\nmessage: ${result.message}`);
