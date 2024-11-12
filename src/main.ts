@@ -35,7 +35,8 @@ export async function main() {
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, aiClient),
     'solve-web-question': (_args: string[]) => solveWebQuestion(config, aiClient),
-    'calibration-file-fix': (_args: string[]) => calibrationFileFix(config, aiClient, new FileService(), new CalculateResultService()),
+    'calibration-file-fix': (_args: string[]) =>
+      calibrationFileFix(config, aiClient, new FileService(), new CalculateResultService()),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];

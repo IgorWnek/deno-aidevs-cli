@@ -32,7 +32,7 @@ export async function calibrationFileFix(
   config: EnvConfig,
   aiClient: AiClient,
   fileService: FileService,
-  calculateResult: CalculateResultService
+  calculateResult: CalculateResultService,
 ): Promise<void> {
   let calibrationData: CalibrationFile;
 
@@ -47,7 +47,6 @@ export async function calibrationFileFix(
 
   let count = 0;
   const fixedTestData: TestData[] = [];
-
 
   for (const testDataSet of calibrationData['test-data']) {
     const result = calculateResult.evaluateExpression(testDataSet.question);
@@ -65,7 +64,7 @@ Answer: Berlin
 
 Question: What color is the sky?
 Answer: Blue
-      `
+      `;
       const messages: ChatMessage[] = [
         { role: 'system', content: systemMessage },
         { role: 'user', content: question },
@@ -82,7 +81,7 @@ Answer: Blue
     const fixedDataSet: TestData = {
       question: testDataSet.question,
       answer: result,
-    }
+    };
 
     if (testCaseToSolve) {
       fixedDataSet.test = testCaseToSolve;
@@ -102,7 +101,7 @@ Answer: Blue
       apikey: config.aiDevsApiKey,
       answer: calibrationData,
     }),
-  })
+  });
 
   const result = await response.json() as VerificationApiResponse;
 
