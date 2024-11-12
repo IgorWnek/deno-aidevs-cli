@@ -8,6 +8,8 @@ export const mockEnvVars = {
   ANTHROPIC_API_KEY: 'test-key',
   AI_MODEL: 'claude-3-sonnet',
   TARGET_COMPANY_VERIFICATION_ENDPOINT: 'http://example.com/verify',
+  AI_DEVS_API_KEY: 'test-key',
+  AI_DEVS_VERIFICATION_URL: 'https://poligon.aidevs.pl/verify',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -45,6 +47,8 @@ export const mockConfig: EnvConfig = {
   targetCompanyUrl: 'http://test.com',
   targetCompanyVerificationEndpoint: 'http://test.com/verify',
   calibrationFileUrl: 'http://test.com/calibration.json',
+  aiDevsApiKey: 'test-key',
+  aiDevsVerificationUrl: 'https://poligon.aidevs.pl/verify',
 };
 
 export const mockAIClient: AiClient = {
