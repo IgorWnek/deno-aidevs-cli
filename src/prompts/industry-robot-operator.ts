@@ -1,44 +1,68 @@
+/**
+ * Try to lead the robot to the extraction point.
+ * Use dumbest model possible, like 4o-mini or less powerful.
+ */
 export const industryRobotOperatorPrompt = `
-You are a facility robot operator. This robot can move through a 2d facility (like boarding game) with steps:
-- UP,
-- RIGHT,
-- DOWN,
-- LEFT.
-To control the robot you need to respond with the series of steps. Production environment is full of obstacles.
-You need to safely guide the robot through the environment using simple 2d array map. This map contains 6 columns
-and 4 rows.
-Here are the characters to explain the map:
-- "R": robot,
-- "O": obstacle,
-- "X": road for robot,
-- "E": extraction point.
-THE MAIN GOAL IS TO FIND A WAY FOR THE ROBOT TO REACH THE EXTRACTION POINT.
+You are a robot controller. The robot is in the room represented by the map below:
+ [
+  ['p', 'X', 'p', 'p', 'p', 'p'], 
+  ['p', 'p', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'X', 'p', 'p'],
+  ['o', 'X', 'p', 'p', 'p', 'F']
+]
 
-<map>
-XOXXXX
-XXXOXX
-XOXOXX
-ROXXXE
-</map>
-
-Use the map to find a way for the robot to reach the extraction point.
-
-Follow these rules to control the robot:
 <rules>
-- Robot can move only UP, RIGHT, DOWN, LEFT
-- Robot can move only on the road marked with "X"
-- Robot can't move through obstacles marked with "O"
-- At the final step Robot must move to the extraction point marked with "E"
-- You can move only the Robot (R), don't change position of obstacles (O)
+- Robot moves one field at a time: UP, RIGHT, LEFT or TOP,
+- Robot is marked as "o" at the map,
+- Robot can move through fields marked as "p" at the map,
+- robot CAN'T move through the fields marked as "X", these are obstacles,
+- Robot must reach the field "F" which is the final destination.
 </rules>
 
-Write down every step of your reasoning and draw new map for the next step. Write that using bullet list.
-Response MUST contain the final instruction with JSON object inside the <RESULT></RESULT> tag, like the example below:
+These are moves and what they mean on the map:
+<move-top>
+- initial position of the Robot "o":
+ [
+  ['p', 'X', 'p', 'p', 'p', 'p'], 
+  ['p', 'p', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'X', 'p', 'p'],
+  ['o', 'X', 'p', 'p', 'p', 'F']
+]
+- move robot top, new position:
+ [
+  ['p', 'X', 'p', 'p', 'p', 'p'], 
+  ['p', 'p', 'p', 'X', 'p', 'p'],
+  ['o', 'X', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'p', 'p', 'F']
+]
+</move-top>
+<move-right>
+- initial position of the Robot "1":
+ [
+  ['p', 'X', 'p', 'p', 'p', 'p'], 
+  ['o', 'p', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'p', 'p', 'F']
+]
+- move robot top, new position:
+ [
+  ['p', 'X', 'p', 'p', 'p', 'p'], 
+  ['p', 'o', 'p', 'X', 'p', 'p'],
+  ['p', 'X', 'p', 'X', 'p', 'p'],
+  ['o', 'X', 'p', 'p', 'p', 'F']
+]
+</move-right>
+
+IMPORTANT: before every step write down your reasoning and create fresh look of the map after the move. Make sure the move is possible and that robot is getting closer to the point "0".
+Response MUST contain the final instruction with JSON object within a <RESULT></RESULT> tag, like the example below:
 <example>
+- reasoning steps,
+- another reasoning steps
 <RESULT>
 {
 "steps": "UP, RIGHT, RIGHT, DOWN"
 }
 </RESULT>
 </example>
+
 `;
