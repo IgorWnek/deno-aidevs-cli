@@ -1,7 +1,7 @@
 import { assertSpyCalls, spy } from 'https://deno.land/std@0.224.0/testing/mock.ts';
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/assert_equals.ts';
 import { CalibrationFile, calibrationFileFix } from './calibration-file-fix.ts';
-import { mockAIClient, mockConfig } from '../../test/test-utils.ts';
+import { getMockEnvConfig, mockAIClient } from '../../test/test-utils.ts';
 import { FileService } from '../../services/file-service.ts';
 import { CalculateResultService } from './services/calculate-result-service.ts';
 import { VerificationApiClient, VerificationApiResponse } from '../../clients/verification-api-client.ts';
@@ -16,6 +16,7 @@ class MockVerificationApiClient implements VerificationApiClient {
 }
 
 Deno.test('calibrationFileFix - file exists', async () => {
+  const mockConfig = getMockEnvConfig();
   const mockCalibrationData: CalibrationFile = {
     apikey: 'test-key',
     description: 'test description',
@@ -60,6 +61,7 @@ Deno.test('calibrationFileFix - file exists', async () => {
 });
 
 Deno.test('calibrationFileFix - file needs to be downloaded', async () => {
+  const mockConfig = getMockEnvConfig();
   const mockCalibrationData: CalibrationFile = {
     apikey: 'test-key',
     description: 'test description',

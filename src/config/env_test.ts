@@ -31,7 +31,8 @@ Deno.test({
       TARGET_COMPANY_VERIFICATION_ENDPOINT: 'https://your-verification-url.com/verification-endpoint',
       CALIBRATION_FILE_URL: 'https://example.com/calibration.json',
       AI_DEVS_API_KEY: 'test-key',
-      AI_DEVS_VERIFICATION_URL: 'https://poligon.aidevs.pl/verify',
+      AI_DEVS_VERIFICATION_URL: 'https://verification-url.com',
+      CENSORSHIP_TASK_URL: 'https://censorship-url.com',
     };
 
     // Mock environment getter
@@ -48,6 +49,7 @@ Deno.test({
       calibrationFileUrl: mockEnv.CALIBRATION_FILE_URL,
       aiDevsApiKey: mockEnv.AI_DEVS_API_KEY,
       aiDevsVerificationUrl: mockEnv.AI_DEVS_VERIFICATION_URL,
+      censorshipTaskUrl: mockEnv.CENSORSHIP_TASK_URL,
     });
   },
   sanitizeOps: false,

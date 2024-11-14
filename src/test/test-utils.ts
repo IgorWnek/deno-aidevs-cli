@@ -39,18 +39,33 @@ export function withMockedEnv(fn: () => Promise<void>) {
   };
 }
 
-export const mockConfig: EnvConfig = {
-  username: 'test-user',
-  password: 'test-pass',
-  anthropicApiKey: 'test-key',
-  aiModel: 'test-model',
-  targetCompanyUrl: 'http://test.com',
-  targetCompanyVerificationEndpoint: 'http://test.com/verify',
-  calibrationFileUrl: 'http://test.com/calibration.json',
-  aiDevsApiKey: 'test-key',
-  aiDevsVerificationUrl: 'https://poligon.aidevs.pl/verify',
-};
-
 export const mockAIClient: AiClient = {
   chat: (_messages: ChatMessage[]) => Promise.resolve('test'),
 };
+
+export function getMockEnvConfig(): EnvConfig {
+  return {
+    targetCompanyUrl: 'https://test.com',
+    username: 'test_user',
+    password: 'test_pass',
+    anthropicApiKey: 'test_anthropic_key',
+    aiModel: 'test_model',
+    targetCompanyVerificationEndpoint: 'https://test.com/verify',
+    calibrationFileUrl: 'https://test.com/calibration',
+    aiDevsApiKey: 'test_ai_devs_key',
+    aiDevsVerificationUrl: 'https://test.com/verify',
+    censorshipTaskUrl: 'https://test.com/censorship',
+  };
+}
+
+export function getMockAiClient() {
+  return {
+    chat: () => Promise.resolve('mock response'),
+  };
+}
+
+export function getMockVerificationClient() {
+  return {
+    verify: () => Promise.resolve({ code: 0, message: 'success' }),
+  };
+}

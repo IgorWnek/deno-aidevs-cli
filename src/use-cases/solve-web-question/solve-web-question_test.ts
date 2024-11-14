@@ -1,7 +1,7 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { extractQuestion, fetchWebPage, solveWebQuestion, submitLoginForm } from './solve-web-question.ts';
 import { AiClient } from '../../ai/client.ts';
-import { mockAIClient, mockConfig } from '../../test/test-utils.ts';
+import { getMockEnvConfig, mockAIClient } from '../../test/test-utils.ts';
 
 Deno.test('fetchWebPage', async (t) => {
   await t.step('should fetch HTML content from a URL', async () => {
@@ -76,6 +76,7 @@ Deno.test('submitLoginForm', async (t) => {
 });
 
 Deno.test('runSolveWebQuestion', async () => {
+  const mockConfig = getMockEnvConfig();
   const originalFetch = globalThis.fetch;
   const originalConsoleLog = console.log;
   let capturedOutput = '';
