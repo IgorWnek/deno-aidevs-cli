@@ -33,10 +33,10 @@ Deno.test('main - invalid use case', async () => {
   await withMockedEnv(async () => {
     await withArgs(['invalid-use-case'], async () => {
       const error = await assertRejects(
-      () => main(),
-      UseCaseError,
-      'Unknown use case: invalid-use-case',
-    );
+        () => main(),
+        UseCaseError,
+        'Unknown use case: invalid-use-case',
+      );
       assertEquals(error instanceof UseCaseError, true);
     });
   });
