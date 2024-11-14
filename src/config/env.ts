@@ -10,6 +10,7 @@ export interface EnvConfig {
   calibrationFileUrl: string;
   aiDevsApiKey: string;
   aiDevsVerificationUrl: string;
+  censorshipTaskUrl: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -25,6 +26,7 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     calibrationFileUrl: Deno.env.get('CALIBRATION_FILE_URL'),
     aiDevsApiKey: Deno.env.get('AI_DEVS_API_KEY'),
     aiDevsVerificationUrl: Deno.env.get('AI_DEVS_VERIFICATION_URL'),
+    censorshipTaskUrl: Deno.env.get('CENSORSHIP_TASK_URL'),
   };
 
   const missingVars = Object.entries(requiredVars)

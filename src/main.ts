@@ -6,6 +6,7 @@ import { calibrationFileFix } from './use-cases/calibration-file-fix/calibration
 import { FileService } from './services/file-service.ts';
 import { CalculateResultService } from './use-cases/calibration-file-fix/services/calculate-result-service.ts';
 import { AiDevsVerificationApiClient } from './clients/verification-api-client.ts';
+import { censorshipTask } from './use-cases/censorship-task/censorship-task.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -42,6 +43,12 @@ export async function main() {
         aiClient,
         new FileService(),
         new CalculateResultService(),
+        new AiDevsVerificationApiClient(config),
+      ),
+    'censorship-task': (_args: string[]) =>
+      censorshipTask(
+        config,
+        aiClient,
         new AiDevsVerificationApiClient(config),
       ),
   } as const;
