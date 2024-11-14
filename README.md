@@ -78,7 +78,7 @@ This project uses:
 
 ### Environment Variables
 
-The application requires the following environment variables:
+The application requires the following environment variables to be set:
 
 - `USERNAME` - Username for authentication
 - `PASSWORD` - Password for authentication
@@ -88,11 +88,12 @@ The application requires the following environment variables:
 - `TARGET_COMPANY_VERIFICATION_ENDPOINT` - The complete URL for the verification endpoint
 - `CALIBRATION_FILE_URL` - URL to download the calibration file from
 - `AI_DEVS_API_KEY` - API key for AI Devs verification
+- `AI_DEVS_VERIFICATION_URL` - The complete URL for the verification endpoint
+- `CENSORSHIP_TASK_URL` - The complete URL for the censorship task endpoint
 
 To set up your environment:
 
-1. Copy `.env.dist` to `.env`
-2. Fill in your values in the `.env` file
+Create a `.env` file in the root directory with these variables.
 
 ### Requirements
 
