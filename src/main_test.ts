@@ -1,5 +1,6 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { main, UseCaseError } from './main.ts';
+import { withMockedEnv } from './test/test-utils.ts';
 
 async function withArgs<T>(args: string[], fn: () => Promise<T>): Promise<T> {
   const originalArgs = Deno.args;
@@ -29,12 +30,14 @@ Deno.test('main - no use case specified', async () => {
 });
 
 Deno.test('main - invalid use case', async () => {
-  await withArgs(['invalid-use-case'], async () => {
-    const error = await assertRejects(
+  await withMockedEnv(async () => {
+    await withArgs(['invalid-use-case'], async () => {
+      const error = await assertRejects(
       () => main(),
       UseCaseError,
       'Unknown use case: invalid-use-case',
     );
-    assertEquals(error instanceof UseCaseError, true);
+      assertEquals(error instanceof UseCaseError, true);
+    });
   });
 });
