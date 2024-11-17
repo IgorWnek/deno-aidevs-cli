@@ -17,12 +17,14 @@ This is my first project in Deno. Why? 🤔 For fun and learning. 🧠
 1. **Trick Robot Verification** - Helps bypass robot verification challenges
 2. **Solve Web Question** - Assists in solving web-based questions
 3. **Calibration File Fix** - Processes and fixes calibration files by evaluating mathematical expressions and handling test cases
+4. **Censorship Task** - Processes text content and applies censorship rules using AI
 
 Usage:
 
 ```bash
 deno run --allow-net --allow-env --allow-read src/main.ts solve-web-question <url>
 deno run --allow-net --allow-env --allow-read src/main.ts calibration-file-fix
+deno run --allow-net --allow-env --allow-read src/main.ts censorship-task
 ```
 
 Required environment variables:
@@ -34,6 +36,7 @@ Required environment variables:
 - TARGET_COMPANY_URL
 - CALIBRATION_FILE_URL
 - AI_DEVS_API_KEY
+- CENSORSHIP_TASK_URL
 
 ### Robot Verification
 
