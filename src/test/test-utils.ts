@@ -8,8 +8,12 @@ export const mockEnvVars = {
   ANTHROPIC_API_KEY: 'test-key',
   AI_MODEL: 'claude-3-sonnet',
   TARGET_COMPANY_VERIFICATION_ENDPOINT: 'http://example.com/verify',
+  CALIBRATION_FILE_URL: 'https://example.com/calibration.json',
   AI_DEVS_API_KEY: 'test-key',
-  AI_DEVS_VERIFICATION_URL: 'https://poligon.aidevs.pl/verify',
+  AI_DEVS_VERIFICATION_URL: 'https://test.com/verify',
+  CENSORSHIP_TASK_URL: 'https://test.com/censorship',
+  AUDITIONS_TASK_MP3S_URL: 'https://test.com/auditions',
+  AUDITIONS_TASK_NAME: 'auditions',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -55,6 +59,8 @@ export function getMockEnvConfig(): EnvConfig {
     aiDevsApiKey: 'test_ai_devs_key',
     aiDevsVerificationUrl: 'https://test.com/verify',
     censorshipTaskUrl: 'https://test.com/censorship',
+    auditionsTaskMp3sUrl: 'https://test.com/auditions',
+    auditionsTaskName: 'auditions',
   };
 }
 

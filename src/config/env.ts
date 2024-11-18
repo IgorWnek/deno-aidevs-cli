@@ -11,6 +11,8 @@ export interface EnvConfig {
   aiDevsApiKey: string;
   aiDevsVerificationUrl: string;
   censorshipTaskUrl: string;
+  auditionsTaskMp3sUrl: string;
+  auditionsTaskName: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -27,6 +29,8 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     aiDevsApiKey: Deno.env.get('AI_DEVS_API_KEY'),
     aiDevsVerificationUrl: Deno.env.get('AI_DEVS_VERIFICATION_URL'),
     censorshipTaskUrl: Deno.env.get('CENSORSHIP_TASK_URL'),
+    auditionsTaskMp3sUrl: Deno.env.get('AUDITIONS_TASK_MP3S_URL'),
+    auditionsTaskName: Deno.env.get('AUDITIONS_TASK_NAME'),
   };
 
   const missingVars = Object.entries(requiredVars)
