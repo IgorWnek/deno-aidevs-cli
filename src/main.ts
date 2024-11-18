@@ -7,6 +7,8 @@ import { FileService } from './services/file-service.ts';
 import { CalculateResultService } from './use-cases/calibration-file-fix/services/calculate-result-service.ts';
 import { AiDevsVerificationApiClient } from './clients/verification-api-client.ts';
 import { censorshipTask } from './use-cases/censorship-task/censorship-task.ts';
+import { auditionsTask } from './use-cases/auditions-task/auditions-task.ts';
+import { Mp3FilesService } from './use-cases/auditions-task/services/mp3-files-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -51,6 +53,7 @@ export async function main() {
         aiClient,
         new AiDevsVerificationApiClient(config),
       ),
+    'auditions-task': (_args: string[]) => auditionsTask(config, new Mp3FilesService(), aiClient),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];
