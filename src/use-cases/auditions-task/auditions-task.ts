@@ -1,15 +1,15 @@
 import { EnvConfig } from '../../config/env.ts';
 import { AiChatClient } from '../../ai-clients/ai-chat-client.ts';
-import { Mp3FilesService } from './services/mp3-files-service.ts';
+import { AudioFilesService } from './services/audio-files-service.ts';
 import { AudioClient } from '../../ai-clients/audio-client.ts';
 
 export async function auditionsTask(deps: {
   config: EnvConfig;
-  mp3FilesService: Mp3FilesService;
+  audioFilesService: AudioFilesService;
   aiChatClient: AiChatClient;
   audioClient: AudioClient;
 }): Promise<void> {
-  const { config, mp3FilesService, aiChatClient, audioClient } = deps;
+  const { config, audioFilesService, aiChatClient, audioClient } = deps;
   const response: Response = await fetch(config.auditionsTaskMp3sUrl);
   const zipFileName = 'auditions.zip';
   const zipFileType = 'application/zip';
@@ -21,11 +21,11 @@ export async function auditionsTask(deps: {
   const blob = await response.blob();
   const zipFile = new File([blob], zipFileName, { type: zipFileType });
 
-  await mp3FilesService.initFileSystem();
-  await mp3FilesService.saveZipFile(zipFile);
-  await mp3FilesService.unzipFile(zipFileName);
+  await audioFilesService.initFileSystem();
+  await audioFilesService.saveZipFile(zipFile);
+  await audioFilesService.unzipFile(zipFileName);
 
-  const audioFiles = await mp3FilesService.findAudioFiles();
+  const audioFiles = await audioFilesService.findAudioFiles();
   console.log(`Found ${audioFiles.length} audio files to process`);
 
   for (const audioFile of audioFiles) {

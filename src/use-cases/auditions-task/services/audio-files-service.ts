@@ -1,6 +1,6 @@
 import { zip } from 'https://deno.land/x/compress@v0.5.2/mod.ts';
 
-export class Mp3FilesService {
+export class AudioFilesService {
   private readonly tmpDir: string;
   private readonly zippedFileDir: string;
   private readonly unzippedFilesDir: string;

@@ -8,7 +8,7 @@ import { CalculateResultService } from './use-cases/calibration-file-fix/service
 import { AiDevsVerificationApiClient } from './clients/verification-api-client.ts';
 import { censorshipTask } from './use-cases/censorship-task/censorship-task.ts';
 import { auditionsTask } from './use-cases/auditions-task/auditions-task.ts';
-import { Mp3FilesService } from './use-cases/auditions-task/services/mp3-files-service.ts';
+import { AudioFilesService } from './use-cases/auditions-task/services/audio-files-service.ts';
 import { createAIConfig, createOpenAiAudioClientConfig } from './config/ai.ts';
 import { OpenAiAudioClient } from './ai-clients/openai-audio-client.ts';
 
@@ -56,7 +56,7 @@ export async function main() {
     'auditions-task': (_args: string[]) =>
       auditionsTask({
         config,
-        mp3FilesService: new Mp3FilesService(),
+        audioFilesService: new AudioFilesService(),
         aiChatClient: anthropicChatClient,
         audioClient: openAiAudioClient,
       }),
