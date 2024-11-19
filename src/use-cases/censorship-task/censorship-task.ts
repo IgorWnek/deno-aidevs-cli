@@ -1,11 +1,11 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AiClient } from '../../ai/client.ts';
+import { AiChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
 import { censorshipPrompt } from '../../prompts/censorship-prompt.ts';
 
 export async function censorshipTask(
   config: EnvConfig,
-  aiClient: AiClient,
+  aiChatClient: AiChatClient,
   verificationClient: VerificationApiClient,
 ): Promise<void> {
   const response = await fetch(config.censorshipTaskUrl);
@@ -17,7 +17,7 @@ export async function censorshipTask(
   const textToCensor = await response.text();
   console.log('Original text:', textToCensor);
 
-  const censoredText = await aiClient.chat([
+  const censoredText = await aiChatClient.chat([
     { role: 'system', content: censorshipPrompt },
     { role: 'user', content: textToCensor },
   ]);

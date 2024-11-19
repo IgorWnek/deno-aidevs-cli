@@ -1,11 +1,11 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AiClient } from '../../ai/client.ts';
+import { AiChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { Mp3FilesService } from './services/mp3-files-service.ts';
 
 export async function auditionsTask(
   config: EnvConfig,
   mp3FilesService: Mp3FilesService,
-  _aiClient: AiClient,
+  _aiChatClient: AiChatClient,
 ): Promise<void> {
   const response: Response = await fetch(config.auditionsTaskMp3sUrl);
   const zipFileName = 'auditions.zip';

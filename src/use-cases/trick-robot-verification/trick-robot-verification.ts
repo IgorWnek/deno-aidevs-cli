@@ -1,6 +1,6 @@
 import { robotVerificationKnowledge } from '../../knowledge/robot-verification.ts';
 import { robotVerificationSystemPrompt } from '../../prompts/robot-verification-prompt.ts';
-import { AiClient, ChatMessage } from '../../ai/client.ts';
+import { AiChatClient, ChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import type { EnvConfig } from '../../config/env.ts';
 
 interface ResponseData {
@@ -15,7 +15,7 @@ interface VerificationRequest {
 
 export async function initializeRobotVerification(
   config: EnvConfig,
-  aiClient: AiClient,
+  aiChatClient: AiChatClient,
 ): Promise<void> {
   const verificationRequest: VerificationRequest = {
     msgID: '0',
@@ -50,7 +50,7 @@ export async function initializeRobotVerification(
     content: responseData.text,
   };
 
-  const aiResponse = await aiClient.chat([systemMessage, userMessage]);
+  const aiResponse = await aiChatClient.chat([systemMessage, userMessage]);
 
   // Send the AI response back to the verification endpoint
   const aiVerificationRequest: VerificationRequest = {

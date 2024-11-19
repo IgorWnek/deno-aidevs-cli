@@ -1,20 +1,12 @@
 import { Anthropic } from 'npm:@anthropic-ai/sdk';
+import { AiChatClient, ChatMessage } from './ai-chat-client.ts';
 
 export interface AIClientConfig {
   apiKey: string;
   model: string;
 }
 
-export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-export interface AiClient {
-  chat(messages: ChatMessage[]): Promise<string>;
-}
-
-export class AnthropicAiClient implements AiClient {
+export class AnthropicAiChatClient implements AiChatClient {
   private client: Anthropic;
   private model: string;
 

@@ -1,6 +1,6 @@
 import { loadEnvConfig } from './config/env.ts';
 import { initializeRobotVerification } from './use-cases/trick-robot-verification/trick-robot-verification.ts';
-import { AnthropicAiClient } from './ai/client.ts';
+import { AnthropicAiChatClient } from './ai-clients/anthropic-ai-chat-client.ts';
 import { solveWebQuestion } from './use-cases/solve-web-question/solve-web-question.ts';
 import { calibrationFileFix } from './use-cases/calibration-file-fix/calibration-file-fix.ts';
 import { FileService } from './services/file-service.ts';
@@ -31,18 +31,18 @@ export async function main() {
   }
 
   const config = await loadEnvConfig();
-  const aiClient = new AnthropicAiClient({
+  const anthropicChatClient = new AnthropicAiChatClient({
     apiKey: config.anthropicApiKey,
     model: config.aiModel,
   });
 
   const useCases = {
-    'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, aiClient),
-    'solve-web-question': (_args: string[]) => solveWebQuestion(config, aiClient),
+    'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
+    'solve-web-question': (_args: string[]) => solveWebQuestion(config, anthropicChatClient),
     'calibration-file-fix': (_args: string[]) =>
       calibrationFileFix(
         config,
-        aiClient,
+        anthropicChatClient,
         new FileService(),
         new CalculateResultService(),
         new AiDevsVerificationApiClient(config),
@@ -50,10 +50,10 @@ export async function main() {
     'censorship-task': (_args: string[]) =>
       censorshipTask(
         config,
-        aiClient,
+        anthropicChatClient,
         new AiDevsVerificationApiClient(config),
       ),
-    'auditions-task': (_args: string[]) => auditionsTask(config, new Mp3FilesService(), aiClient),
+    'auditions-task': (_args: string[]) => auditionsTask(config, new Mp3FilesService(), anthropicChatClient),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];

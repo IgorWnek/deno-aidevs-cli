@@ -3,7 +3,7 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/assert_equals
 import { stub } from 'https://deno.land/std@0.224.0/testing/mock.ts';
 import { censorshipTask } from './censorship-task.ts';
 import { getMockAiClient, getMockEnvConfig, getMockVerificationClient } from '../../test/test-utils.ts';
-import { AiClient, ChatMessage } from '../../ai/client.ts';
+import { AiChatClient, ChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { VerificationApiClient, VerificationApiResponse } from '../../clients/verification-api-client.ts';
 
 const mockConfig = getMockEnvConfig();
@@ -18,9 +18,9 @@ Deno.test({
     try {
       // Mock AI client response with proper typing
       const chatStub = stub(
-        mockAiClient as AiClient,
+        mockAiClient as AiChatClient,
         'chat',
-        function (this: AiClient, _messages: ChatMessage[]) {
+        function (this: AiChatClient, _messages: ChatMessage[]) {
           return Promise.resolve('censored text');
         },
       );
