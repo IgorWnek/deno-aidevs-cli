@@ -14,6 +14,8 @@ export const mockEnvVars = {
   CENSORSHIP_TASK_URL: 'https://test.com/censorship',
   AUDITIONS_TASK_MP3S_URL: 'https://test.com/auditions',
   AUDITIONS_TASK_NAME: 'auditions',
+  OPENAI_API_KEY: 'test-key',
+  OPENAI_AUDIO_MODEL: 'whisper-1',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -61,6 +63,8 @@ export function getMockEnvConfig(): EnvConfig {
     censorshipTaskUrl: 'https://test.com/censorship',
     auditionsTaskMp3sUrl: 'https://test.com/auditions',
     auditionsTaskName: 'auditions',
+    openAiApiKey: 'test-key',
+    openAiAudioModel: 'whisper-1',
   };
 }
 

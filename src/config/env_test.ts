@@ -39,6 +39,8 @@ Deno.test({
       censorshipTaskUrl: mockEnvVars.CENSORSHIP_TASK_URL,
       auditionsTaskMp3sUrl: mockEnvVars.AUDITIONS_TASK_MP3S_URL,
       auditionsTaskName: mockEnvVars.AUDITIONS_TASK_NAME,
+      openAiApiKey: mockEnvVars.OPENAI_API_KEY,
+      openAiAudioModel: mockEnvVars.OPENAI_AUDIO_MODEL,
     });
   },
   sanitizeOps: false,
