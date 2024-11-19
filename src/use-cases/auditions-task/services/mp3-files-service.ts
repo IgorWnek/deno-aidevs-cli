@@ -53,4 +53,22 @@ export class Mp3FilesService {
       throw new Error(`Failed to unzip file ${fileName}: ${errorMessage}`);
     }
   }
+
+  async findAudioFiles(): Promise<File[]> {
+    const SUPPORTED_FORMATS = ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm'];
+    const files: File[] = [];
+
+    for await (const entry of Deno.readDir(this.unzippedFilesDir)) {
+      if (!entry.isFile) continue;
+
+      const extension = entry.name.split('.').pop()?.toLowerCase();
+      if (extension && SUPPORTED_FORMATS.includes(extension)) {
+        const filePath = `${this.unzippedFilesDir}/${entry.name}`;
+        const fileContent = await Deno.readFile(filePath);
+        files.push(new File([fileContent], entry.name));
+      }
+    }
+
+    return files;
+  }
 }

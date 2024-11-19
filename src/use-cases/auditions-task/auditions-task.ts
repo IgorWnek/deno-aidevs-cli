@@ -24,4 +24,22 @@ export async function auditionsTask(deps: {
   await mp3FilesService.initFileSystem();
   await mp3FilesService.saveZipFile(zipFile);
   await mp3FilesService.unzipFile(zipFileName);
+
+  const audioFiles = await mp3FilesService.findAudioFiles();
+  console.log(`Found ${audioFiles.length} audio files to process`);
+
+  for (const audioFile of audioFiles) {
+    try {
+      console.log(`Processing file: ${audioFile.name}`);
+      const transcription = await audioClient.transcribe(audioFile);
+      console.log(`Transcription for ${audioFile.name}:`);
+      console.log(transcription.text);
+      console.log('---');
+    } catch (error) {
+      console.error(
+        `Error processing ${audioFile.name}:`,
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
 }
