@@ -1,10 +1,4 @@
-export interface EnvConfig {
-  targetCompanyUrl: string;
-  username: string;
-  password: string;
-  anthropicApiKey: string;
-  aiModel: string;
-}
+import { EnvConfig } from './env.ts';
 
 export interface AIConfig {
   apiKey: string;
@@ -15,5 +9,19 @@ export function createAIConfig(envConfig: Pick<EnvConfig, 'anthropicApiKey' | 'a
   return {
     apiKey: envConfig.anthropicApiKey,
     model: envConfig.aiModel,
+  };
+}
+
+export interface AudioClientConfig {
+  apiKey: string;
+  model?: string;
+}
+
+export function createOpenAiAudioClientConfig(
+  envConfig: Pick<EnvConfig, 'openAiApiKey' | 'openAiAudioModel'>,
+): AudioClientConfig {
+  return {
+    apiKey: envConfig.openAiApiKey,
+    model: envConfig.openAiAudioModel,
   };
 }
