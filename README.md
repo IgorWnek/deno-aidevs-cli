@@ -18,13 +18,15 @@ This is my first project in Deno. Why? 🤔 For fun and learning. 🧠
 2. **Solve Web Question** - Assists in solving web-based questions
 3. **Calibration File Fix** - Processes and fixes calibration files by evaluating mathematical expressions and handling test cases
 4. **Censorship Task** - Processes text content and applies censorship rules using AI
+5. **Auditions Task** - Processes audio recordings, transcribes them, and analyzes content using AI
 
 Usage:
 
 ```bash
 deno run --allow-net --allow-env --allow-read src/main.ts solve-web-question <url>
-deno run --allow-net --allow-env --allow-read src/main.ts calibration-file-fix
-deno run --allow-net --allow-env --allow-read src/main.ts censorship-task
+deno run --allow-net --allow-env --allow-read --allow-write src/main.ts calibration-file-fix
+deno run --allow-net --allow-env --allow-read --allow-write src/main.ts censorship-task
+deno run --allow-net --allow-env --allow-read --allow-write src/main.ts auditions-task
 ```
 
 Required environment variables:
@@ -37,6 +39,10 @@ Required environment variables:
 - CALIBRATION_FILE_URL
 - AI_DEVS_API_KEY
 - CENSORSHIP_TASK_URL
+- AUDITIONS_TASK_MP3S_URL
+- AUDITIONS_TASK_NAME
+- OPENAI_API_KEY
+- OPENAI_AUDIO_MODEL
 
 ### Robot Verification
 
@@ -59,6 +65,29 @@ This feature allows the system to handle robot verification challenges by:
 #### Usage
 
 The system handles verification requests in JSON format:
+
+### Auditions Task
+
+The application includes functionality to process audio recordings and analyze their content.
+
+#### How it Works
+
+This feature:
+
+1. Downloads and processes audio files from a ZIP archive
+2. Transcribes audio using OpenAI's audio model
+3. Caches transcriptions as text files for future use
+4. Analyzes transcriptions using AI to extract specific information
+5. Verifies results with the AI Devs API
+
+#### Configuration
+
+Add the following to your `.env` file:
+
+- `AUDITIONS_TASK_MP3S_URL` - URL to download the ZIP file containing audio recordings
+- `AUDITIONS_TASK_NAME` - Task name for verification
+- `OPENAI_API_KEY` - Your OpenAI API key for audio transcription
+- `OPENAI_AUDIO_MODEL` - OpenAI model to use for audio transcription
 
 ## Project Structure
 
@@ -93,6 +122,10 @@ The application requires the following environment variables to be set:
 - `AI_DEVS_API_KEY` - API key for AI Devs verification
 - `AI_DEVS_VERIFICATION_URL` - The complete URL for the verification endpoint
 - `CENSORSHIP_TASK_URL` - The complete URL for the censorship task endpoint
+- `AUDITIONS_TASK_MP3S_URL` - URL to download the ZIP file containing audio recordings
+- `AUDITIONS_TASK_NAME` - Task name for verification
+- `OPENAI_API_KEY` - Your OpenAI API key for audio transcription
+- `OPENAI_AUDIO_MODEL` - OpenAI model to use for audio transcription
 
 To set up your environment:
 
