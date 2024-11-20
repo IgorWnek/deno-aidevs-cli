@@ -11,6 +11,7 @@ import { auditionsTask } from './use-cases/auditions-task/auditions-task.ts';
 import { AudioFilesService } from './use-cases/auditions-task/services/audio-files-service.ts';
 import { createAIConfig, createOpenAiAudioClientConfig } from './config/ai.ts';
 import { OpenAiAudioClient } from './ai-clients/openai-audio-client.ts';
+import { TxtFilesService } from './use-cases/auditions-task/services/txt-files-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -35,6 +36,7 @@ export async function main() {
   const config = await loadEnvConfig();
   const anthropicChatClient = new AnthropicAiChatClient(createAIConfig(config));
   const openAiAudioClient = new OpenAiAudioClient(createOpenAiAudioClientConfig(config));
+  const verificationClient = new AiDevsVerificationApiClient(config);
 
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
@@ -45,18 +47,20 @@ export async function main() {
         anthropicChatClient,
         new FileService(),
         new CalculateResultService(),
-        new AiDevsVerificationApiClient(config),
+        verificationClient,
       ),
     'censorship-task': (_args: string[]) =>
       censorshipTask(
         config,
         anthropicChatClient,
-        new AiDevsVerificationApiClient(config),
+        verificationClient,
       ),
     'auditions-task': (_args: string[]) =>
       auditionsTask({
         config,
+        verificationClient,
         audioFilesService: new AudioFilesService(),
+        txtFilesService: new TxtFilesService(),
         aiChatClient: anthropicChatClient,
         audioClient: openAiAudioClient,
       }),
