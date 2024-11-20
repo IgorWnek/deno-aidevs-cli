@@ -1,4 +1,4 @@
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/mod.ts";
+import { ensureDir } from 'https://deno.land/std@0.224.0/fs/mod.ts';
 
 export class TxtFilesService {
   private readonly filesDir: string;

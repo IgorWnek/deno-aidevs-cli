@@ -11,7 +11,7 @@ export async function auditionsTask(deps: {
   txtFilesService: TxtFilesService;
   aiChatClient: AiChatClient;
   audioClient: AudioClient;
-  verificationClient: VerificationApiClient,
+  verificationClient: VerificationApiClient;
 }): Promise<void> {
   const { config, audioFilesService, txtFilesService, aiChatClient, audioClient, verificationClient } = deps;
   const { auditionsTaskMp3sUrl, auditionsTaskName } = config;
@@ -91,7 +91,8 @@ Before giving your answer, take the deep breath and think. Answer only with the 
 
 ${transcriptionsText}`;
 
-  const userPrompt = 'On which street is the university where dr Andrzej Maj is working currently? Answer with just the street name and nothing else.';
+  const userPrompt =
+    'On which street is the university where dr Andrzej Maj is working currently? Answer with just the street name and nothing else.';
 
   const chatResponse = await aiChatClient.chat([
     { role: 'system', content: systemPrompt },
