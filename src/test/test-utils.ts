@@ -16,6 +16,9 @@ export const mockEnvVars = {
   AUDITIONS_TASK_NAME: 'auditions',
   OPENAI_API_KEY: 'test-key',
   OPENAI_AUDIO_MODEL: 'whisper-1',
+  DALLE3_API_KEY: 'test-key',
+  ROBOT_IMAGE_TASK_URL: 'https://test.com/robot-image',
+  ROBOT_IMAGE_TASK_NAME: 'robot-image',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -65,6 +68,9 @@ export function getMockEnvConfig(): EnvConfig {
     auditionsTaskName: 'auditions',
     openAiApiKey: 'test-key',
     openAiAudioModel: 'whisper-1',
+    dalle3ApiKey: 'test-key',
+    robotImageTaskUrl: 'https://test.com/robot-image',
+    robotImageTaskName: 'robot-image',
   };
 }
 
