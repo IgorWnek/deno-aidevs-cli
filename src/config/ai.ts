@@ -25,3 +25,15 @@ export function createOpenAiAudioClientConfig(
     model: envConfig.openAiAudioModel,
   };
 }
+
+export interface ImageClientConfig {
+  apiKey: string;
+}
+
+export function createDalle3ImageClientConfig(
+  envConfig: Pick<EnvConfig, 'dalle3ApiKey'>,
+): ImageClientConfig {
+  return {
+    apiKey: envConfig.dalle3ApiKey,
+  };
+}
