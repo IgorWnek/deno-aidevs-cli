@@ -1,11 +1,11 @@
 import { assertEquals } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { initializeRobotVerification } from './trick-robot-verification.ts';
-import { AiChatClient, type ChatMessage } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient, type AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { getMockEnvConfig } from '../../test/test-utils.ts';
 
 // Create a mock AIClient class
-export const mockAIClient: AiChatClient = {
-  chat: (_messages: ChatMessage[]) => Promise.resolve('Krakow'),
+export const mockAIClient: AnthropicChatClient = {
+  chat: (_messages: AnthropicChatMessage[]) => Promise.resolve('Krakow'),
 };
 
 Deno.test('initializeRobotVerification - full verification flow', async () => {

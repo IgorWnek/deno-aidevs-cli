@@ -1,4 +1,4 @@
-import { AiChatClient, ChatMessage } from '../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient, AnthropicChatMessage } from '../ai-clients/ai-chat-client.ts';
 import { EnvConfig } from '../config/env.ts';
 
 export const mockEnvVars = {
@@ -48,8 +48,8 @@ export function withMockedEnv(fn: () => Promise<void>) {
   };
 }
 
-export const mockAIClient: AiChatClient = {
-  chat: (_messages: ChatMessage[]) => Promise.resolve('test'),
+export const mockAIClient: AnthropicChatClient = {
+  chat: (_messages: AnthropicChatMessage[]) => Promise.resolve('test'),
 };
 
 export function getMockEnvConfig(): EnvConfig {

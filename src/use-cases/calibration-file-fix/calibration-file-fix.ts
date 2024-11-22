@@ -1,5 +1,5 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AiChatClient, ChatMessage } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { FileService } from '../../services/file-service.ts';
 import { CalculateResultService } from './services/calculate-result-service.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
@@ -27,7 +27,7 @@ const CALIBRATION_FILENAME = 'calibration.json';
 
 export async function calibrationFileFix(
   config: EnvConfig,
-  aiChatClient: AiChatClient,
+  aiChatClient: AnthropicChatClient,
   fileService: FileService,
   calculateResult: CalculateResultService,
   verificationClient: VerificationApiClient,
@@ -52,7 +52,7 @@ export async function calibrationFileFix(
 
     if (testDataSet?.test) {
       const question = testDataSet.test.q;
-      const messages: ChatMessage[] = [
+      const messages: AnthropicChatMessage[] = [
         { role: 'system', content: questionSolverPrompt },
         { role: 'user', content: question },
       ];

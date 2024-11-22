@@ -1,5 +1,5 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AiChatClient } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { AudioFilesService } from './services/audio-files-service.ts';
 import { AudioClient } from '../../ai-clients/audio-client.ts';
 import { TxtFilesService } from './services/txt-files-service.ts';
@@ -9,7 +9,7 @@ export async function auditionsTask(deps: {
   config: EnvConfig;
   audioFilesService: AudioFilesService;
   txtFilesService: TxtFilesService;
-  aiChatClient: AiChatClient;
+  aiChatClient: AnthropicChatClient;
   audioClient: AudioClient;
   verificationClient: VerificationApiClient;
 }): Promise<void> {

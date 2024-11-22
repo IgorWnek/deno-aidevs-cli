@@ -1,11 +1,11 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AiChatClient } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
 import { censorshipPrompt } from '../../prompts/censorship-prompt.ts';
 
 export async function censorshipTask(
   config: EnvConfig,
-  aiChatClient: AiChatClient,
+  aiChatClient: AnthropicChatClient,
   verificationClient: VerificationApiClient,
 ): Promise<void> {
   const response = await fetch(config.censorshipTaskUrl);

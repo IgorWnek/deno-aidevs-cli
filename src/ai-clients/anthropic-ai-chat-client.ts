@@ -1,12 +1,12 @@
 import { Anthropic } from 'npm:@anthropic-ai/sdk';
-import { AiChatClient, ChatMessage } from './ai-chat-client.ts';
+import { AnthropicChatClient, AnthropicChatMessage } from './ai-chat-client.ts';
 
 export interface AIClientConfig {
   apiKey: string;
   model: string;
 }
 
-export class AnthropicAiChatClient implements AiChatClient {
+export class AnthropicAiChatClient implements AnthropicChatClient {
   private client: Anthropic;
   private model: string;
 
@@ -17,14 +17,14 @@ export class AnthropicAiChatClient implements AiChatClient {
     this.model = config.model;
   }
 
-  async chat(messages: ChatMessage[]): Promise<string> {
+  async chat(messages: AnthropicChatMessage[]): Promise<string> {
     // Convert our generic messages format to Anthropic's format
     const systemMessage = messages.find((m) => m.role === 'system')?.content || '';
     const userMessage = messages.find((m) => m.role === 'user')?.content || '';
 
     const response = await this.client.messages.create({
       model: this.model,
-      max_tokens: 100,
+      max_tokens: 1000,
       temperature: 0,
       system: systemMessage,
       messages: [

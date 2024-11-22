@@ -1,11 +1,11 @@
 import { assertEquals } from 'https://deno.land/std/assert/assert_equals.ts';
 import { spy } from 'https://deno.land/std/testing/mock.ts';
-import { AiChatClient } from '../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient } from '../ai-clients/ai-chat-client.ts';
 import { processQuestion } from './question_processor.ts';
 
 Deno.test('processQuestion - extracts number from AI response', async () => {
   const mockChat = spy(() => Promise.resolve('The answer is 42'));
-  const mockAIClient: AiChatClient = {
+  const mockAIClient: AnthropicChatClient = {
     chat: mockChat,
   };
 
@@ -15,7 +15,7 @@ Deno.test('processQuestion - extracts number from AI response', async () => {
 
 Deno.test('processQuestion - handles non-numeric response', async () => {
   const mockChat = spy(() => Promise.resolve('The answer is forty-two'));
-  const mockAIClient: AiChatClient = {
+  const mockAIClient: AnthropicChatClient = {
     chat: mockChat,
   };
 

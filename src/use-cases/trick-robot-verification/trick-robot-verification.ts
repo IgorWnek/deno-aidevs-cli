@@ -1,6 +1,6 @@
 import { robotVerificationKnowledge } from '../../knowledge/robot-verification.ts';
 import { robotVerificationSystemPrompt } from '../../prompts/robot-verification-prompt.ts';
-import { AiChatClient, ChatMessage } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import type { EnvConfig } from '../../config/env.ts';
 
 interface ResponseData {
@@ -15,7 +15,7 @@ interface VerificationRequest {
 
 export async function initializeRobotVerification(
   config: EnvConfig,
-  aiChatClient: AiChatClient,
+  aiChatClient: AnthropicChatClient,
 ): Promise<void> {
   const verificationRequest: VerificationRequest = {
     msgID: '0',
@@ -39,13 +39,13 @@ export async function initializeRobotVerification(
   console.log('Verification Response:', JSON.stringify(responseData));
 
   // Handle the verification response with AI
-  const systemMessage: ChatMessage = {
+  const systemMessage: AnthropicChatMessage = {
     role: 'system',
     content: robotVerificationSystemPrompt
       .replace('{{knowledge}}', robotVerificationKnowledge),
   };
 
-  const userMessage: ChatMessage = {
+  const userMessage: AnthropicChatMessage = {
     role: 'user',
     content: responseData.text,
   };

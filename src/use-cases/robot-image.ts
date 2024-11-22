@@ -1,4 +1,4 @@
-import { AiChatClient } from '../ai-clients/ai-chat-client.ts';
+import { AnthropicChatClient } from '../ai-clients/ai-chat-client.ts';
 import { ImageClient } from '../ai-clients/image-client.ts';
 import { VerificationApiClient } from '../clients/verification-api-client.ts';
 import { EnvConfig } from '../config/env.ts';
@@ -10,7 +10,7 @@ interface RobotImageTask {
 export async function robotImage(
   deps: {
     config: EnvConfig;
-    aiChatClient: AiChatClient;
+    aiChatClient: AnthropicChatClient;
     imageClient: ImageClient;
     verificationClient: VerificationApiClient;
   },
