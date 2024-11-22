@@ -15,6 +15,9 @@ export interface EnvConfig {
   auditionsTaskName: string;
   openAiApiKey: string;
   openAiAudioModel: string;
+  dalle3ApiKey: string;
+  robotImageTaskUrl: string;
+  robotImageTaskName: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -35,6 +38,9 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     auditionsTaskName: Deno.env.get('AUDITIONS_TASK_NAME'),
     openAiApiKey: Deno.env.get('OPENAI_API_KEY'),
     openAiAudioModel: Deno.env.get('OPENAI_AUDIO_MODEL'),
+    dalle3ApiKey: Deno.env.get('DALLE3_API_KEY'),
+    robotImageTaskUrl: Deno.env.get('ROBOT_IMAGE_TASK_URL'),
+    robotImageTaskName: Deno.env.get('ROBOT_IMAGE_TASK_NAME'),
   };
 
   const missingVars = Object.entries(requiredVars)

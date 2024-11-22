@@ -9,9 +9,11 @@ import { AiDevsVerificationApiClient } from './clients/verification-api-client.t
 import { censorshipTask } from './use-cases/censorship-task/censorship-task.ts';
 import { auditionsTask } from './use-cases/auditions-task/auditions-task.ts';
 import { AudioFilesService } from './use-cases/auditions-task/services/audio-files-service.ts';
-import { createAIConfig, createOpenAiAudioClientConfig } from './config/ai.ts';
+import { createAIConfig, createDalle3ImageClientConfig, createOpenAiAudioClientConfig } from './config/ai.ts';
 import { OpenAiAudioClient } from './ai-clients/openai-audio-client.ts';
 import { TxtFilesService } from './use-cases/auditions-task/services/txt-files-service.ts';
+import { Dalle3ImageClient } from './ai-clients/dalle3-image-client.ts';
+import { robotImage } from './use-cases/robot-image.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -37,6 +39,7 @@ export async function main() {
   const anthropicChatClient = new AnthropicAiChatClient(createAIConfig(config));
   const openAiAudioClient = new OpenAiAudioClient(createOpenAiAudioClientConfig(config));
   const verificationClient = new AiDevsVerificationApiClient(config);
+  const dalle3ImageClient = new Dalle3ImageClient(createDalle3ImageClientConfig(config));
 
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
@@ -63,6 +66,13 @@ export async function main() {
         txtFilesService: new TxtFilesService(),
         aiChatClient: anthropicChatClient,
         audioClient: openAiAudioClient,
+      }),
+    'robot-image': (_args: string[]) =>
+      robotImage({
+        config,
+        verificationClient,
+        aiChatClient: anthropicChatClient,
+        imageClient: dalle3ImageClient,
       }),
   } as const;
 

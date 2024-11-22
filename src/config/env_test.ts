@@ -41,6 +41,9 @@ Deno.test({
       auditionsTaskName: mockEnvVars.AUDITIONS_TASK_NAME,
       openAiApiKey: mockEnvVars.OPENAI_API_KEY,
       openAiAudioModel: mockEnvVars.OPENAI_AUDIO_MODEL,
+      dalle3ApiKey: mockEnvVars.DALLE3_API_KEY,
+      robotImageTaskUrl: mockEnvVars.ROBOT_IMAGE_TASK_URL,
+      robotImageTaskName: mockEnvVars.ROBOT_IMAGE_TASK_NAME,
     });
   },
   sanitizeOps: false,
