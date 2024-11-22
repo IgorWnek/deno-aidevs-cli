@@ -14,6 +14,7 @@ import { OpenAiAudioClient } from './ai-clients/openai-audio-client.ts';
 import { TxtFilesService } from './use-cases/auditions-task/services/txt-files-service.ts';
 import { Dalle3ImageClient } from './ai-clients/dalle3-image-client.ts';
 import { robotImage } from './use-cases/robot-image.ts';
+import { recogniseCity } from './use-cases/recognise-city.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -74,6 +75,7 @@ export async function main() {
         aiChatClient: anthropicChatClient,
         imageClient: dalle3ImageClient,
       }),
+    'recognise-city': (_args: string[]) => recogniseCity({ aiChatClient: anthropicChatClient }),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];
