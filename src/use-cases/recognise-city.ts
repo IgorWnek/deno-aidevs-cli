@@ -1,9 +1,8 @@
-import { AnthropicAiChatClient } from '../ai-clients/anthropic-ai-chat-client.ts';
-import { ClaudeImageContent } from '../ai-clients/ai-chat-client.ts';
+import { AnthropicClient, ImageContent } from '../ai-clients/anthropic-ai-chat-client.ts';
 import { exists } from 'https://deno.land/std@0.224.0/fs/exists.ts';
 import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 
-export async function recogniseCity(deps: { aiChatClient: AnthropicAiChatClient }): Promise<void> {
+export async function recogniseCity(deps: { aiChatClient: AnthropicClient }): Promise<void> {
   const { aiChatClient } = deps;
   const cityDetailsPath = new URL('../../tmp/city-details', import.meta.url).pathname;
 
@@ -17,7 +16,7 @@ export async function recogniseCity(deps: { aiChatClient: AnthropicAiChatClient 
       const imageData = await Deno.readFile(`${cityDetailsPath}/${entry.name}`);
       // TODO(@igor): Image should be optimised for the AI model.
       const base64Image = encodeBase64(imageData);
-      const mediaType = entry.name.toLowerCase().endsWith('png') ? 'image/png' : 'image/jpeg';
+      const mediaType = entry.name.toLowerCase().endsWith('png') ? 'image/png' as const : 'image/jpeg' as const;
       imageFiles.push({ data: base64Image, mediaType });
     }
   }
@@ -26,7 +25,7 @@ export async function recogniseCity(deps: { aiChatClient: AnthropicAiChatClient 
     throw new Error('No image files found in the directory');
   }
 
-  const content: ClaudeImageContent[] = imageFiles.map((img) => ({
+  const content: ImageContent[] = imageFiles.map((img) => ({
     type: 'image',
     source: {
       type: 'base64',
@@ -41,22 +40,24 @@ Focus on the streets names and layout of the city.
 Tips: in the city must be granaries and castle.
   `;
 
-  const response = await aiChatClient.chat([
-    {
-      role: 'system',
-      content: systemPrompt,
+  const response = await aiChatClient.chat({
+    systemPrompt,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          ...content,
+          {
+            type: 'text',
+            text: 'Here are the map fragments.',
+          },
+        ],
+      },
+    ],
+    options: {
+      model: 'claude-3-5-sonnet-20241022',
     },
-    {
-      role: 'user',
-      content: [
-        ...content,
-        {
-          type: 'text',
-          text: 'Here are the map fragments.',
-        },
-      ],
-    },
-  ]);
+  });
 
   console.log('City recognition response:');
   console.log(response, '\n\n');

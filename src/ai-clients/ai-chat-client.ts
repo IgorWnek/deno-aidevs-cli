@@ -23,7 +23,7 @@ export interface ClaudeImageContent {
   type: 'image';
   source: {
     type: 'base64';
-    media_type: string;
+    media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
     data: string;
   };
 }
@@ -31,6 +31,15 @@ export interface ClaudeImageContent {
 export interface TextContent {
   type: 'text';
   text: string;
+}
+
+export interface ImageBlockParam {
+  type: 'image';
+  source: {
+    type: 'base64';
+    media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
+    data: string;
+  };
 }
 
 export type ChatAnthropicContent = ClaudeImageContent | TextContent;
