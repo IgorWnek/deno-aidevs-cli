@@ -1,4 +1,3 @@
-import { AnthropicChatClient, AnthropicChatMessage } from '../ai-clients/ai-chat-client.ts';
 import { AnthropicClient, ChatMessage, ChatOptions } from '../ai-clients/anthropic-ai-chat-client.ts';
 import { EnvConfig } from '../config/env.ts';
 

@@ -3,7 +3,6 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/assert_equals
 import { stub } from 'https://deno.land/std@0.224.0/testing/mock.ts';
 import { censorshipTask } from './censorship-task.ts';
 import { getMockAiClient, getMockEnvConfig, getMockVerificationClient } from '../../test/test-utils.ts';
-import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { VerificationApiClient, VerificationApiResponse } from '../../clients/verification-api-client.ts';
 import { AnthropicClient, ChatMessage, ChatOptions } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
