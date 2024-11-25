@@ -6,7 +6,7 @@ import { AnthropicClient, ChatMessage, ChatOptions } from '../../ai-clients/anth
 Deno.test('initializeRobotVerification - full verification flow', async () => {
   const mockConfig = getMockEnvConfig();
   const mockAIClient: AnthropicClient = {
-    chat: (payload: {
+    chat: (_: {
       systemPrompt: string;
       messages: ChatMessage[];
       options?: ChatOptions;

@@ -4,7 +4,7 @@ import { AnthropicClient, ChatMessage, ChatOptions } from '../ai-clients/anthrop
 import { processQuestion } from './question_processor.ts';
 
 Deno.test('processQuestion - extracts number from AI response', async () => {
-  const mockChat = spy((payload: {
+  const mockChat = spy((_: {
     systemPrompt: string;
     messages: ChatMessage[];
     options?: ChatOptions;
@@ -31,7 +31,7 @@ Deno.test('processQuestion - extracts number from AI response', async () => {
 });
 
 Deno.test('processQuestion - handles non-numeric response', async () => {
-  const mockChat = spy((payload: {
+  const mockChat = spy((_: {
     systemPrompt: string;
     messages: ChatMessage[];
     options?: ChatOptions;

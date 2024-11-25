@@ -49,7 +49,7 @@ export function withMockedEnv(fn: () => Promise<void>) {
 }
 
 export const mockAIClient: AnthropicClient = {
-  chat: (payload: {
+  chat: (_: {
     systemPrompt: string;
     messages: ChatMessage[];
     options?: ChatOptions;
