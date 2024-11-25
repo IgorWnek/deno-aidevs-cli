@@ -1,15 +1,18 @@
 import { assertEquals } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { initializeRobotVerification } from './trick-robot-verification.ts';
-import { AnthropicChatClient, type AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { getMockEnvConfig } from '../../test/test-utils.ts';
-
-// Create a mock AIClient class
-export const mockAIClient: AnthropicChatClient = {
-  chat: (_messages: AnthropicChatMessage[]) => Promise.resolve('Krakow'),
-};
+import { AnthropicClient, ChatMessage, ChatOptions } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
 Deno.test('initializeRobotVerification - full verification flow', async () => {
   const mockConfig = getMockEnvConfig();
+  const mockAIClient: AnthropicClient = {
+    chat: (payload: {
+      systemPrompt: string;
+      messages: ChatMessage[];
+      options?: ChatOptions;
+    }) => Promise.resolve('Krakow'),
+  };
+
   const originalFetch = globalThis.fetch;
   const originalConsoleLog = console.log;
   const requests: RequestInit[] = [];
@@ -23,7 +26,6 @@ Deno.test('initializeRobotVerification - full verification flow', async () => {
     globalThis.fetch = (_input: string | URL | Request, init?: RequestInit) => {
       requests.push(init!);
 
-      // First response (initial verification)
       if (requests.length === 1) {
         return Promise.resolve(
           new Response(
@@ -39,7 +41,6 @@ Deno.test('initializeRobotVerification - full verification flow', async () => {
         );
       }
 
-      // Second response (AI answer verification)
       return Promise.resolve(
         new Response(JSON.stringify({ status: 'ok' }), {
           status: 200,
@@ -50,14 +51,12 @@ Deno.test('initializeRobotVerification - full verification flow', async () => {
 
     await initializeRobotVerification(mockConfig, mockAIClient);
 
-    // Verify initial request
     const initialRequest = JSON.parse(requests[0].body as string);
     assertEquals(initialRequest, {
       msgID: '0',
       text: 'READY',
     });
 
-    // Verify AI response request
     const aiRequest = JSON.parse(requests[1].body as string);
     assertEquals(aiRequest, {
       msgID: 123,

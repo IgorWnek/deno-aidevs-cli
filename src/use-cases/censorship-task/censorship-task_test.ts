@@ -5,6 +5,7 @@ import { censorshipTask } from './censorship-task.ts';
 import { getMockAiClient, getMockEnvConfig, getMockVerificationClient } from '../../test/test-utils.ts';
 import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import { VerificationApiClient, VerificationApiResponse } from '../../clients/verification-api-client.ts';
+import { AnthropicClient, ChatMessage, ChatOptions } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
 const mockConfig = getMockEnvConfig();
 const mockAiClient = getMockAiClient();
@@ -16,16 +17,17 @@ Deno.test({
     const fetchStub = stub(globalThis, 'fetch', () => Promise.resolve(new Response('text to censor')));
 
     try {
-      // Mock AI client response with proper typing
       const chatStub = stub(
-        mockAiClient as AnthropicChatClient,
+        mockAiClient as AnthropicClient,
         'chat',
-        function (this: AnthropicChatClient, _messages: AnthropicChatMessage[]) {
+        function (
+          this: AnthropicClient,
+          _payload: { systemPrompt: string; messages: ChatMessage[]; options?: ChatOptions },
+        ) {
           return Promise.resolve('censored text');
         },
       );
 
-      // Mock verification client response with proper typing
       const verifyStub = stub(
         mockVerificationClient as VerificationApiClient,
         'verify',
@@ -36,10 +38,10 @@ Deno.test({
 
       await censorshipTask(mockConfig, mockAiClient, mockVerificationClient);
 
-      // Verify that all mocks were called with correct arguments
       const aiCalls = chatStub.calls;
       assertEquals(aiCalls.length, 1);
-      assertEquals(aiCalls[0].args[0][1].content, 'text to censor');
+      console.log(aiCalls[0].args[0]);
+      assertEquals(aiCalls[0].args[0].messages[0].content, 'text to censor');
 
       const verificationCalls = verifyStub.calls;
       assertEquals(verificationCalls.length, 1);

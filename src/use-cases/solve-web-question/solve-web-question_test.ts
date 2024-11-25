@@ -1,7 +1,7 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.208.0/assert/mod.ts';
 import { extractQuestion, fetchWebPage, solveWebQuestion, submitLoginForm } from './solve-web-question.ts';
-import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { getMockEnvConfig, mockAIClient } from '../../test/test-utils.ts';
+import { AnthropicClient } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
 Deno.test('fetchWebPage', async (t) => {
   await t.step('should fetch HTML content from a URL', async () => {
@@ -104,7 +104,7 @@ Deno.test('runSolveWebQuestion', async () => {
       );
     };
 
-    const mockQuestionProcessor = (_question: string, _client: AnthropicChatClient) => Promise.resolve(4);
+    const mockQuestionProcessor = (_question: string, _client: AnthropicClient) => Promise.resolve(4);
 
     await solveWebQuestion(mockConfig, mockAIClient, mockQuestionProcessor);
 
