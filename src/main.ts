@@ -9,7 +9,11 @@ import { AiDevsVerificationApiClient } from './clients/verification-api-client.t
 import { censorshipTask } from './use-cases/censorship-task/censorship-task.ts';
 import { auditionsTask } from './use-cases/auditions-task/auditions-task.ts';
 import { AudioFilesService } from './use-cases/auditions-task/services/audio-files-service.ts';
-import { createAIConfig, createDalle3ImageClientConfig, createOpenAiAudioClientConfig } from './config/ai.ts';
+import {
+  createAnthropicChatClientConfig,
+  createDalle3ImageClientConfig,
+  createOpenAiAudioClientConfig,
+} from './config/ai.ts';
 import { OpenAiAudioClient } from './ai-clients/openai-audio-client.ts';
 import { TxtFilesService } from './use-cases/auditions-task/services/txt-files-service.ts';
 import { Dalle3ImageClient } from './ai-clients/dalle3-image-client.ts';
@@ -37,7 +41,7 @@ export async function main() {
   }
 
   const config = await loadEnvConfig();
-  const anthropicChatClient = new AnthropicAiChatClient(createAIConfig(config));
+  const anthropicChatClient = new AnthropicAiChatClient(createAnthropicChatClientConfig(config));
   const openAiAudioClient = new OpenAiAudioClient(createOpenAiAudioClientConfig(config));
   const verificationClient = new AiDevsVerificationApiClient(config);
   const dalle3ImageClient = new Dalle3ImageClient(createDalle3ImageClientConfig(config));

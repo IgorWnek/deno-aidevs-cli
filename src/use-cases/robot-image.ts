@@ -1,4 +1,4 @@
-import { AnthropicChatClient } from '../ai-clients/ai-chat-client.ts';
+import { AnthropicClient } from '../ai-clients/anthropic-ai-chat-client.ts';
 import { ImageClient } from '../ai-clients/image-client.ts';
 import { VerificationApiClient } from '../clients/verification-api-client.ts';
 import { EnvConfig } from '../config/env.ts';
@@ -10,7 +10,7 @@ interface RobotImageTask {
 export async function robotImage(
   deps: {
     config: EnvConfig;
-    aiChatClient: AnthropicChatClient;
+    aiChatClient: AnthropicClient;
     imageClient: ImageClient;
     verificationClient: VerificationApiClient;
   },
@@ -32,10 +32,15 @@ Remember, you can return ONLY THE PROMPT, nothing else.
 User can provide description in different language than English, but your response should be only in English.
   `;
 
-  const imageGenerationPrompt = await aiChatClient.chat([
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: taskData.description },
-  ]);
+  const imageGenerationPrompt = await aiChatClient.chat({
+    systemPrompt,
+    messages: [
+      { role: 'user', content: taskData.description },
+    ],
+    options: {
+      model: 'claude-3-5-sonnet-20241022',
+    },
+  });
 
   console.log('Image generation prompt:');
   console.log(imageGenerationPrompt, '\n\n');

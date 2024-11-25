@@ -1,5 +1,5 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicClient } from '../../ai-clients/anthropic-ai-chat-client.ts';
 import { AudioFilesService } from './services/audio-files-service.ts';
 import { AudioClient } from '../../ai-clients/audio-client.ts';
 import { TxtFilesService } from './services/txt-files-service.ts';
@@ -9,7 +9,7 @@ export async function auditionsTask(deps: {
   config: EnvConfig;
   audioFilesService: AudioFilesService;
   txtFilesService: TxtFilesService;
-  aiChatClient: AnthropicChatClient;
+  aiChatClient: AnthropicClient;
   audioClient: AudioClient;
   verificationClient: VerificationApiClient;
 }): Promise<void> {
@@ -94,10 +94,15 @@ ${transcriptionsText}`;
   const userPrompt =
     'On which street is the university where dr Andrzej Maj is working currently? Answer with just the street name and nothing else.';
 
-  const chatResponse = await aiChatClient.chat([
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: userPrompt },
-  ]);
+  const chatResponse = await aiChatClient.chat({
+    systemPrompt,
+    messages: [
+      { role: 'user', content: userPrompt },
+    ],
+    options: {
+      model: 'claude-3-5-sonnet-20241022',
+    },
+  });
 
   console.log('AI Response:', chatResponse);
 

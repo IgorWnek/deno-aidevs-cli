@@ -1,11 +1,11 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicClient } from '../../ai-clients/anthropic-ai-chat-client.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
 import { censorshipPrompt } from '../../prompts/censorship-prompt.ts';
 
 export async function censorshipTask(
   config: EnvConfig,
-  aiChatClient: AnthropicChatClient,
+  aiChatClient: AnthropicClient,
   verificationClient: VerificationApiClient,
 ): Promise<void> {
   const response = await fetch(config.censorshipTaskUrl);
@@ -17,10 +17,15 @@ export async function censorshipTask(
   const textToCensor = await response.text();
   console.log('Original text:', textToCensor);
 
-  const censoredText = await aiChatClient.chat([
-    { role: 'system', content: censorshipPrompt },
-    { role: 'user', content: textToCensor },
-  ]);
+  const censoredText = await aiChatClient.chat({
+    systemPrompt: censorshipPrompt,
+    messages: [
+      { role: 'user', content: textToCensor },
+    ],
+    options: {
+      model: 'claude-3-5-sonnet-20241022',
+    },
+  });
 
   console.log('Censored text:', censoredText);
 

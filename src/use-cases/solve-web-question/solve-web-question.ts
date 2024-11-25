@@ -1,7 +1,7 @@
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts';
-import { AnthropicChatClient } from '../../ai-clients/ai-chat-client.ts';
 import { type EnvConfig } from '../../config/env.ts';
 import { processQuestion } from '../../services/question_processor.ts';
+import { AnthropicClient } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
 interface LoginCredentials {
   username: string;
@@ -52,8 +52,8 @@ export async function submitLoginForm(url: string, credentials: LoginCredentials
 
 export async function solveWebQuestion(
   config: EnvConfig,
-  aiChatClient: AnthropicChatClient,
-  customProcessQuestion?: (question: string, aiChatClient: AnthropicChatClient) => Promise<number>,
+  aiChatClient: AnthropicClient,
+  customProcessQuestion?: (question: string, aiChatClient: AnthropicClient) => Promise<number>,
 ) {
   try {
     const html = await fetchWebPage(config.targetCompanyUrl);

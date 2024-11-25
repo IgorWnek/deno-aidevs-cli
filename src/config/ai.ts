@@ -1,14 +1,13 @@
+import { AnthropicConfig, ClaudeModel } from '../ai-clients/anthropic-ai-chat-client.ts';
 import { EnvConfig } from './env.ts';
 
-export interface AIConfig {
-  apiKey: string;
-  model: string;
-}
-
-export function createAIConfig(envConfig: Pick<EnvConfig, 'anthropicApiKey' | 'aiModel'>): AIConfig {
+export function createAnthropicChatClientConfig(
+  envConfig: Pick<EnvConfig, 'anthropicApiKey'>,
+  model?: ClaudeModel,
+): AnthropicConfig {
   return {
     apiKey: envConfig.anthropicApiKey,
-    model: envConfig.aiModel,
+    model,
   };
 }
 

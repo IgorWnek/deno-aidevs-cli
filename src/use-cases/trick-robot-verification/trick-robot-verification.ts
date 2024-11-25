@@ -1,12 +1,7 @@
 import { robotVerificationKnowledge } from '../../knowledge/robot-verification.ts';
 import { robotVerificationSystemPrompt } from '../../prompts/robot-verification-prompt.ts';
-import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
 import type { EnvConfig } from '../../config/env.ts';
-
-interface ResponseData {
-  msgID: number;
-  text: string;
-}
+import { AnthropicClient, ChatMessage } from '../../ai-clients/anthropic-ai-chat-client.ts';
 
 interface VerificationRequest {
   msgID: string | number;
@@ -15,7 +10,7 @@ interface VerificationRequest {
 
 export async function initializeRobotVerification(
   config: EnvConfig,
-  aiChatClient: AnthropicChatClient,
+  aiChatClient: AnthropicClient,
 ): Promise<void> {
   const verificationRequest: VerificationRequest = {
     msgID: '0',
@@ -38,21 +33,22 @@ export async function initializeRobotVerification(
   const responseData = await response.json();
   console.log('Verification Response:', JSON.stringify(responseData));
 
-  // Handle the verification response with AI
-  const systemMessage: AnthropicChatMessage = {
-    role: 'system',
-    content: robotVerificationSystemPrompt
-      .replace('{{knowledge}}', robotVerificationKnowledge),
-  };
+  const systemPrompt = robotVerificationSystemPrompt
+    .replace('{{knowledge}}', robotVerificationKnowledge);
 
-  const userMessage: AnthropicChatMessage = {
+  const userMessage: ChatMessage = {
     role: 'user',
     content: responseData.text,
   };
 
-  const aiResponse = await aiChatClient.chat([systemMessage, userMessage]);
+  const aiResponse = await aiChatClient.chat({
+    systemPrompt,
+    messages: [userMessage],
+    options: {
+      model: 'claude-3-5-sonnet-20241022',
+    },
+  });
 
-  // Send the AI response back to the verification endpoint
   const aiVerificationRequest: VerificationRequest = {
     msgID: responseData.msgID,
     text: aiResponse,

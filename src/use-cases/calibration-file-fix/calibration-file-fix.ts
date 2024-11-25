@@ -1,5 +1,5 @@
 import { EnvConfig } from '../../config/env.ts';
-import { AnthropicChatClient, AnthropicChatMessage } from '../../ai-clients/ai-chat-client.ts';
+import { AnthropicClient, ChatMessage } from '../../ai-clients/anthropic-ai-chat-client.ts';
 import { FileService } from '../../services/file-service.ts';
 import { CalculateResultService } from './services/calculate-result-service.ts';
 import { VerificationApiClient } from '../../clients/verification-api-client.ts';
@@ -27,7 +27,7 @@ const CALIBRATION_FILENAME = 'calibration.json';
 
 export async function calibrationFileFix(
   config: EnvConfig,
-  aiChatClient: AnthropicChatClient,
+  aiChatClient: AnthropicClient,
   fileService: FileService,
   calculateResult: CalculateResultService,
   verificationClient: VerificationApiClient,
@@ -52,12 +52,18 @@ export async function calibrationFileFix(
 
     if (testDataSet?.test) {
       const question = testDataSet.test.q;
-      const messages: AnthropicChatMessage[] = [
-        { role: 'system', content: questionSolverPrompt },
+      const systemPrompt = questionSolverPrompt;
+      const messages: ChatMessage[] = [
         { role: 'user', content: question },
       ];
       console.log(`Test question: ${question}`);
-      const aiAnswer = await aiChatClient.chat(messages);
+      const aiAnswer = await aiChatClient.chat({
+        systemPrompt,
+        messages,
+        options: {
+          model: 'claude-3-5-sonnet-20241022',
+        },
+      });
       testCaseToSolve = {
         q: question,
         a: aiAnswer,
