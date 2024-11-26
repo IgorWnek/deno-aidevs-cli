@@ -19,6 +19,8 @@ export const mockEnvVars = {
   DALLE3_API_KEY: 'test-key',
   ROBOT_IMAGE_TASK_URL: 'https://test.com/robot-image',
   ROBOT_IMAGE_TASK_NAME: 'robot-image',
+  FILES_FROM_FACTORY_TASK_URL: 'https://test.com/files-from-factory',
+  FILES_FROM_FACTORY_TASK_NAME: 'files-from-factory',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -75,6 +77,8 @@ export function getMockEnvConfig(): EnvConfig {
     dalle3ApiKey: 'test-key',
     robotImageTaskUrl: 'https://test.com/robot-image',
     robotImageTaskName: 'robot-image',
+    filesFromFactoryTaskUrl: 'https://test.com/files-from-factory',
+    filesFromFactoryTaskName: 'files-from-factory',
   };
 }
 

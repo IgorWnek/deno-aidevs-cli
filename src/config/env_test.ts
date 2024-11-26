@@ -44,6 +44,8 @@ Deno.test({
       dalle3ApiKey: mockEnvVars.DALLE3_API_KEY,
       robotImageTaskUrl: mockEnvVars.ROBOT_IMAGE_TASK_URL,
       robotImageTaskName: mockEnvVars.ROBOT_IMAGE_TASK_NAME,
+      filesFromFactoryTaskUrl: mockEnvVars.FILES_FROM_FACTORY_TASK_URL,
+      filesFromFactoryTaskName: mockEnvVars.FILES_FROM_FACTORY_TASK_NAME,
     });
   },
   sanitizeOps: false,
