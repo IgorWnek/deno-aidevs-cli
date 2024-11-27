@@ -21,6 +21,7 @@ import { robotImage } from './use-cases/robot-image.ts';
 import { recogniseCity } from './use-cases/recognise-city.ts';
 import { filesFromFactory } from './use-cases/files-from-factory.ts';
 import { ZipFilesService } from './services/zip-files-service.ts';
+import { FilesService } from './services/files-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -48,6 +49,7 @@ export async function main() {
   const verificationClient = new AiDevsVerificationApiClient(config);
   const dalle3ImageClient = new Dalle3ImageClient(createDalle3ImageClientConfig(config));
   const zipFilesService = new ZipFilesService();
+  const filesService = new FilesService();
 
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
@@ -84,7 +86,7 @@ export async function main() {
       }),
     'recognise-city': (_args: string[]) => recogniseCity({ aiChatClient: anthropicChatClient }),
     'files-from-factory': (_args: string[]) =>
-      filesFromFactory({ config, zipFilesService, options: { cleanFiles: true } }),
+      filesFromFactory({ config, zipFilesService, filesService, options: { cleanFiles: true } }),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];

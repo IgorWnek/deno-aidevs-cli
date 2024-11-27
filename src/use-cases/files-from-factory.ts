@@ -1,14 +1,20 @@
 import { ZipFilesService } from './../services/zip-files-service.ts';
 import { EnvConfig } from '../config/env.ts';
+import { FilesService } from '../services/files-service.ts';
 
 type Options = {
   cleanFiles: boolean;
 };
 
-export async function filesFromFactory(
-  payload: { config: EnvConfig; zipFilesService: ZipFilesService; options: Options },
-): Promise<void> {
-  const { config, zipFilesService, options } = payload;
+type FilesFromFactoryPayload = {
+  config: EnvConfig;
+  zipFilesService: ZipFilesService;
+  filesService: FilesService;
+  options: Options;
+};
+
+export async function filesFromFactory(payload: FilesFromFactoryPayload): Promise<void> {
+  const { config, zipFilesService, filesService, options } = payload;
   const { filesFromFactoryTaskUrl, filesFromFactoryTaskName } = config;
   const tmpDir = new URL('../../tmp/files-from-factory', import.meta.url).pathname;
   const zipFilesDir = `${tmpDir}/zipped`;
@@ -22,6 +28,10 @@ export async function filesFromFactory(
     zipFilesService,
     options,
   });
+
+  for await (const file of filesService.readFilesFromDirectory(unzippedFilesDir)) {
+    console.log(file.name);
+  }
 }
 
 async function downloadAndUnzipFiles(

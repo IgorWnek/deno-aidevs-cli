@@ -43,4 +43,6 @@ export class ZipFilesService {
       throw new Error(`Failed to unzip file ${fileName}: ${errorMessage}`);
     }
   }
+
+  // TODO(@igor) add method to find zip files in directory
 }
