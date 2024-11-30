@@ -20,9 +20,18 @@ export async function filesFromFactory(payload: FilesFromFactoryPayload): Promis
   const zipFilesDir = `${tmpDir}/zipped`;
   const unzippedFilesDir = `${tmpDir}/unzipped`;
 
+  if (options.cleanFiles) {
+    await zipFilesService.cleanDirectory(zipFilesDir);
+    await zipFilesService.cleanDirectory(unzippedFilesDir);
+  }
+
+  await zipFilesService.initFileSystem(zipFilesDir);
+  await zipFilesService.initFileSystem(unzippedFilesDir);
+
+  const zipFile = await downloadZipFile(filesFromFactoryTaskUrl, filesFromFactoryTaskName);
+
   await downloadAndUnzipFiles({
-    filesFromFactoryTaskUrl,
-    filesFromFactoryTaskName,
+    zipFile,
     zipFilesDir,
     unzippedFilesDir,
     zipFilesService,
@@ -34,39 +43,35 @@ export async function filesFromFactory(payload: FilesFromFactoryPayload): Promis
   }
 }
 
-async function downloadAndUnzipFiles(
-  payload: {
-    filesFromFactoryTaskUrl: string;
-    filesFromFactoryTaskName: string;
-    zipFilesDir: string;
-    unzippedFilesDir: string;
-    zipFilesService: ZipFilesService;
-    options: Options;
-  },
-): Promise<void> {
-  const { filesFromFactoryTaskUrl, filesFromFactoryTaskName, zipFilesDir, unzippedFilesDir, zipFilesService, options } =
-    payload;
-
+async function downloadZipFile(
+  filesFromFactoryTaskUrl: string,
+  filesFromFactoryTaskName: string,
+): Promise<File> {
   const response = await fetch(filesFromFactoryTaskUrl);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch ZIP file: ${response.statusText}`);
   }
 
-  if (options.cleanFiles) {
-    await zipFilesService.cleanDirectory(zipFilesDir);
-    await zipFilesService.cleanDirectory(unzippedFilesDir);
-  }
-
-  await zipFilesService.initFileSystem(zipFilesDir);
-  await zipFilesService.initFileSystem(unzippedFilesDir);
-
   const blob = await response.blob();
   const zipFileName = `${filesFromFactoryTaskName}.zip`;
-  const zipFile = new File([blob], zipFileName, { type: 'application/zip' });
+  return new File([blob], zipFileName, { type: 'application/zip' });
+}
+
+async function downloadAndUnzipFiles(
+  payload: {
+    zipFile: File;
+    zipFilesDir: string;
+    unzippedFilesDir: string;
+    zipFilesService: ZipFilesService;
+    options: Options;
+  },
+): Promise<void> {
+  const { zipFile, zipFilesDir, unzippedFilesDir, zipFilesService } = payload;
+
   await zipFilesService.saveZipFile(zipFile, zipFilesDir);
   await zipFilesService.unzipFile({
-    fileName: zipFileName,
+    fileName: zipFile.name,
     zipDirectoryPath: zipFilesDir,
     unzippedDirectoryPath: unzippedFilesDir,
   });
