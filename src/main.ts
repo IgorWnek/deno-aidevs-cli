@@ -86,7 +86,13 @@ export async function main() {
       }),
     'recognise-city': (_args: string[]) => recogniseCity({ aiChatClient: anthropicChatClient }),
     'files-from-factory': (_args: string[]) =>
-      filesFromFactory({ config, zipFilesService, filesService, options: { cleanFiles: true } }),
+      filesFromFactory({
+        config,
+        zipFilesService,
+        filesService,
+        aiClient: anthropicChatClient,
+        options: { cleanFiles: true, trackEncryptedFiles: true },
+      }),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];
