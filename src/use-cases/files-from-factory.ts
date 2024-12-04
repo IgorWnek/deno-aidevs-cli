@@ -111,7 +111,7 @@ async function unzipFile(
 }
 
 interface TextCategorizationResponse {
-  'text-categories': Array<'humans' | 'robots' | 'other'>;
+  'text-category': 'humans' | 'hardware' | 'other';
 }
 
 async function categorizeTextContent(
@@ -119,21 +119,23 @@ async function categorizeTextContent(
   aiClient: AnthropicClient,
 ): Promise<TextCategorizationResponse> {
   const systemPrompt = `
-You are a text classification assistant. Analyze the provided text and determine if it relates to humans, robots, or other topics.
-Return a JSON response with a "text-categories" field containing an array of applicable categories: "humans", "robots", "other".
+You are a text classification assistant. Analyze the provided text and determine if it relates to:
+- captured HUMANS or situations where HUMANS were spotted somewhere,
+- fixed HARDWARE faults.
+Return a JSON response with a "text-category" field containing the applicable category: "humans", "hardware" or "other".
 Return only with the JSON and nothing else.
 
 Example responses:
 <example>
-{ "text-categories": ["humans"] }
+{ "text-category": "humans" }
 </example>
 
 <example>
-{ "text-categories": ["robots"] }
+{ "text-category": "hardware" }
 </example>
 
 <example>
-{ "text-categories": ["other"] }
+{ "text-category": "other" }
 </example>
 
 The text to analyze is:
@@ -169,7 +171,7 @@ async function processFiles(
 
       try {
         const categories = await categorizeTextContent(content, aiClient);
-        console.log(`File ${file.name} categories:`, categories['text-categories']);
+        console.log(`File ${file.name} category:`, categories['text-category']);
       } catch (error) {
         console.error(`Failed to categorize file ${file.name}:`, error);
       }
