@@ -19,6 +19,9 @@ import { TxtFilesService } from './use-cases/auditions-task/services/txt-files-s
 import { Dalle3ImageClient } from './ai-clients/dalle3-image-client.ts';
 import { robotImage } from './use-cases/robot-image.ts';
 import { recogniseCity } from './use-cases/recognise-city.ts';
+import { filesFromFactory } from './use-cases/files-from-factory.ts';
+import { ZipFilesService } from './services/zip-files-service.ts';
+import { FilesService } from './services/files-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -45,6 +48,8 @@ export async function main() {
   const openAiAudioClient = new OpenAiAudioClient(createOpenAiAudioClientConfig(config));
   const verificationClient = new AiDevsVerificationApiClient(config);
   const dalle3ImageClient = new Dalle3ImageClient(createDalle3ImageClientConfig(config));
+  const zipFilesService = new ZipFilesService();
+  const filesService = new FilesService();
 
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
@@ -80,6 +85,14 @@ export async function main() {
         imageClient: dalle3ImageClient,
       }),
     'recognise-city': (_args: string[]) => recogniseCity({ aiChatClient: anthropicChatClient }),
+    'files-from-factory': (_args: string[]) =>
+      filesFromFactory({
+        config,
+        zipFilesService,
+        filesService,
+        aiClient: anthropicChatClient,
+        options: { cleanFiles: true, trackEncryptedFiles: true },
+      }),
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];

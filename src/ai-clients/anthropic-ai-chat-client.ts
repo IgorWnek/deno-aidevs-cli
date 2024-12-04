@@ -1,7 +1,7 @@
 import { Anthropic } from 'npm:@anthropic-ai/sdk';
 
-type MessageRole = 'user' | 'assistant';
-type MediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
+export type MessageRole = 'user' | 'assistant';
+export type MediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
 
 export type ClaudeModel =
   | 'claude-3-5-sonnet-20241022'

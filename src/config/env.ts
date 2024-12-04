@@ -18,6 +18,8 @@ export interface EnvConfig {
   dalle3ApiKey: string;
   robotImageTaskUrl: string;
   robotImageTaskName: string;
+  filesFromFactoryTaskUrl: string;
+  filesFromFactoryTaskName: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -41,6 +43,8 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     dalle3ApiKey: Deno.env.get('DALLE3_API_KEY'),
     robotImageTaskUrl: Deno.env.get('ROBOT_IMAGE_TASK_URL'),
     robotImageTaskName: Deno.env.get('ROBOT_IMAGE_TASK_NAME'),
+    filesFromFactoryTaskUrl: Deno.env.get('FILES_FROM_FACTORY_TASK_URL'),
+    filesFromFactoryTaskName: Deno.env.get('FILES_FROM_FACTORY_TASK_NAME'),
   };
 
   const missingVars = Object.entries(requiredVars)
