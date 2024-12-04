@@ -111,7 +111,7 @@ async function unzipFile(
 }
 
 interface TextCategorizationResponse {
-  'text-category': 'humans' | 'hardware' | 'other';
+  'text-category': 'people' | 'hardware' | 'other';
 }
 
 async function categorizeTextContent(
@@ -120,14 +120,14 @@ async function categorizeTextContent(
 ): Promise<TextCategorizationResponse> {
   const systemPrompt = `
 You are a text classification assistant. Analyze the provided text and determine if it relates to:
-- captured HUMANS or situations where HUMANS were spotted somewhere,
+- captured PEOPLE or situations where PEOPLE were spotted somewhere,
 - fixed HARDWARE faults.
-Return a JSON response with a "text-category" field containing the applicable category: "humans", "hardware" or "other".
+Return a JSON response with a "text-category" field containing the applicable category: "people", "hardware" or "other".
 Return only with the JSON and nothing else.
 
 Example responses:
 <example>
-{ "text-category": "humans" }
+{ "text-category": "people" }
 </example>
 
 <example>
@@ -164,17 +164,27 @@ async function processFiles(
   filesService: FilesService,
   aiClient: AnthropicClient,
 ): Promise<void> {
+  const assignedFiles: { people: string[]; hardware: string[] } = { people: [], hardware: [] };
+
   for await (const file of filesService.readFilesFromDirectory(unzippedFilesDir)) {
     if (file.name.toLowerCase().endsWith('.txt')) {
       const filePath = `${unzippedFilesDir}/${file.name}`;
       const content = await Deno.readTextFile(filePath);
 
       try {
-        const categories = await categorizeTextContent(content, aiClient);
-        console.log(`File ${file.name} category:`, categories['text-category']);
+        const fileCategory = await categorizeTextContent(content, aiClient);
+        console.log(`File ${file.name} category:`, fileCategory['text-category']);
+
+        if (fileCategory['text-category'] === 'other') {
+          continue;
+        }
+
+        assignedFiles[fileCategory['text-category']].push(file.name);
       } catch (error) {
         console.error(`Failed to categorize file ${file.name}:`, error);
       }
     }
   }
+
+  console.log('Assigned files: ', assignedFiles);
 }
