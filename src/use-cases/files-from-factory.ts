@@ -1,7 +1,7 @@
 import { ZipFilesService } from './../services/zip-files-service.ts';
 import { EnvConfig } from '../config/env.ts';
 import { FilesService } from '../services/files-service.ts';
-import { AnthropicClient } from '../ai-clients/anthropic-ai-chat-client.ts';
+import { AnthropicClient, MediaType } from '../ai-clients/anthropic-ai-chat-client.ts';
 
 type Options = {
   cleanFiles: boolean;
@@ -167,24 +167,82 @@ async function processFiles(
   const assignedFiles: { people: string[]; hardware: string[] } = { people: [], hardware: [] };
 
   for await (const file of filesService.readFilesFromDirectory(unzippedFilesDir)) {
-    if (file.name.toLowerCase().endsWith('.txt')) {
-      const filePath = `${unzippedFilesDir}/${file.name}`;
-      const content = await Deno.readTextFile(filePath);
+    let content: string;
+    const filePath = `${unzippedFilesDir}/${file.name}`;
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-      try {
-        const fileCategory = await categorizeTextContent(content, aiClient);
-        console.log(`File ${file.name} category:`, fileCategory['text-category']);
-
-        if (fileCategory['text-category'] === 'other') {
-          continue;
-        }
-
-        assignedFiles[fileCategory['text-category']].push(file.name);
-      } catch (error) {
-        console.error(`Failed to categorize file ${file.name}:`, error);
+    try {
+      if (fileExtension === 'txt') {
+        content = await Deno.readTextFile(filePath);
+      } else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension || '')) {
+        content = await getTextFromMedia(filePath, fileExtension!, aiClient);
+      } else {
+        console.warn(`Skipping unsupported file type: ${file.name}`);
+        continue;
       }
+
+      const fileCategory = await categorizeTextContent(content, aiClient);
+      console.log(`File ${file.name} category:`, fileCategory['text-category']);
+
+      if (fileCategory['text-category'] === 'other') {
+        continue;
+      }
+
+      assignedFiles[fileCategory['text-category']].push(file.name);
+    } catch (error) {
+      console.error(`Failed to process file ${file.name}:`, error);
     }
   }
 
   console.log('Assigned files: ', assignedFiles);
+}
+
+async function getTextFromMedia(
+  filePath: string,
+  fileType: string,
+  aiClient: AnthropicClient,
+): Promise<string> {
+  const fileData = await Deno.readFile(filePath);
+  const base64Data = encode(fileData);
+
+  let mediaType: MediaType;
+  switch (fileType.toLowerCase()) {
+    case 'png':
+      mediaType = 'image/png';
+      break;
+    case 'jpg':
+    case 'jpeg':
+      mediaType = 'image/jpeg';
+      break;
+    case 'gif':
+      mediaType = 'image/gif';
+      break;
+    case 'webp':
+      mediaType = 'image/webp';
+      break;
+    default:
+      throw new Error(`Unsupported media type: ${fileType}`);
+  }
+
+  const response = await aiClient.chat({
+    systemPrompt: 'Describe what you see in this image in detail.',
+    messages: [{
+      role: 'user',
+      content: [{
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: mediaType,
+          data: base64Data,
+        },
+      }],
+    }],
+  });
+
+  return response;
+}
+
+function encode(data: Uint8Array): string {
+  const binString = Array.from(data, (x) => String.fromCodePoint(x)).join('');
+  return btoa(binString);
 }
