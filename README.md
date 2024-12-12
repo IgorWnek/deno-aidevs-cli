@@ -29,40 +29,21 @@ deno run --allow-net --allow-env --allow-read --allow-write src/main.ts censorsh
 deno run --allow-net --allow-env --allow-read --allow-write src/main.ts auditions-task
 ```
 
-Required environment variables:
-
-- USERNAME
-- PASSWORD
-- ANTHROPIC_API_KEY
-- AI_MODEL
-- TARGET_COMPANY_URL
-- CALIBRATION_FILE_URL
-- AI_DEVS_API_KEY
-- CENSORSHIP_TASK_URL
-- AUDITIONS_TASK_MP3S_URL
-- AUDITIONS_TASK_NAME
-- OPENAI_API_KEY
-- OPENAI_AUDIO_MODEL
-
 ### Robot Verification
 
-The application includes a robot verification mechanism that communicates with a verification endpoint.
+This use case includes a robot verification mechanism that communicates with a verification endpoint.
 
-#### Configuration
-
-Add the following to your `.env` file:
-
-- `TARGET_COMPANY_VERIFICATION_ENDPOINT` - The complete URL for the verification endpoint
-
-#### How it Works
-
-This feature allows the system to handle robot verification challenges by:
+It allows the system to handle robot verification challenges by:
 
 1. Processing incoming verification questions
 2. Using AI to generate responses based on specific knowledge
 3. Sending back verification responses
 
-#### Usage
+To use it run:
+
+```bash
+deno run --allow-net --allow-env --allow-read src/main.ts solve-web-question <url>
+```
 
 The system handles verification requests in JSON format:
 
@@ -70,9 +51,7 @@ The system handles verification requests in JSON format:
 
 The application includes functionality to process audio recordings and analyze their content.
 
-#### How it Works
-
-This feature:
+What this use case does:
 
 1. Downloads and processes audio files from a ZIP archive
 2. Transcribes audio using OpenAI's audio model
@@ -80,24 +59,15 @@ This feature:
 4. Analyzes transcriptions using AI to extract specific information
 5. Verifies results with the AI Devs API
 
-#### Configuration
+Run this use case:
 
-Add the following to your `.env` file:
-
-- `AUDITIONS_TASK_MP3S_URL` - URL to download the ZIP file containing audio recordings
-- `AUDITIONS_TASK_NAME` - Task name for verification
-- `OPENAI_API_KEY` - Your OpenAI API key for audio transcription
-- `OPENAI_AUDIO_MODEL` - OpenAI model to use for audio transcription
+```bash
+deno run --allow-net --allow-env --allow-read --allow-write src/main.ts auditions-task
+```
 
 ## Project Structure
 
-```text
-src/
-  ├── ai/              # AI client implementation
-  ├── services/        # Shared services
-  └── use-cases/       # Individual use cases
-      └── solve-web-question/
-```
+TBD at the later point
 
 ## Development
 
@@ -107,6 +77,7 @@ This project uses:
 - TypeScript
 - Test Driven Development
 - Anthropic AI SDK
+- official OpenAI REST API
 
 ### Environment Variables
 
@@ -140,11 +111,12 @@ Create a `.env` file in the root directory with these variables.
   - `--allow-net` for network access
   - `--allow-env` for environment variables
   - `--allow-read` for .env file
+  - `--allow-write` for creation and writing new files
 
 ### Running Tests
 
 ```bash
-deno test --allow-net --allow-env --allow-read
+deno test --allow-net --allow-env --allow-read --allow-write
 ```
 
 ### Error Handling
