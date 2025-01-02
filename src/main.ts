@@ -22,6 +22,7 @@ import { recogniseCity } from './use-cases/recognise-city.ts';
 import { filesFromFactory } from './use-cases/files-from-factory.ts';
 import { ZipFilesService } from './services/zip-files-service.ts';
 import { FilesService } from './services/files-service.ts';
+import { articleAnalyser } from './use-cases/article-analyser.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -93,6 +94,13 @@ export async function main() {
         aiClient: anthropicChatClient,
         options: { cleanFiles: true, trackEncryptedFiles: true },
       }),
+    'article-analyser': (args: string[]) => {
+      const archiveScrapedArticle = args.includes('-asa');
+      return articleAnalyser({
+        config,
+        options: { archiveScrapedArticle },
+      });
+    },
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];
