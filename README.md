@@ -65,6 +65,18 @@ Run this use case:
 deno run --allow-net --allow-env --allow-read --allow-write src/main.ts auditions-task
 ```
 
+### Article Analyser
+
+Run this use case:
+
+```bash
+deno run --allow-net --allow-env --allow-read --allow-write src/main.ts article-analyser -asa
+```
+
+There are options available:
+
+- `-asa` - Archive scraped article
+
 ## Project Structure
 
 TBD at the later point
