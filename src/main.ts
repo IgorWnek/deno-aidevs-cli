@@ -22,6 +22,10 @@ import { recogniseCity } from './use-cases/recognise-city.ts';
 import { filesFromFactory } from './use-cases/files-from-factory.ts';
 import { ZipFilesService } from './services/zip-files-service.ts';
 import { FilesService } from './services/files-service.ts';
+import { articleAnalyser } from './use-cases/article-analyser.ts';
+import { createArticleAnalyserConfig } from './config/article-analyser-config.ts';
+import { FirecrawlService } from './services/crawling-service.ts';
+import { createFirecrawlConfig } from './config/firecrawl-config.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -50,6 +54,7 @@ export async function main() {
   const dalle3ImageClient = new Dalle3ImageClient(createDalle3ImageClientConfig(config));
   const zipFilesService = new ZipFilesService();
   const filesService = new FilesService();
+  const crawlingService = new FirecrawlService(createFirecrawlConfig(config));
 
   const useCases = {
     'trick-robot-verification': (_args: string[]) => initializeRobotVerification(config, anthropicChatClient),
@@ -93,6 +98,14 @@ export async function main() {
         aiClient: anthropicChatClient,
         options: { cleanFiles: true, trackEncryptedFiles: true },
       }),
+    'article-analyser': (args: string[]) => {
+      const archiveScrapedArticle = args.includes('-asa');
+      return articleAnalyser({
+        crawlingService,
+        config: createArticleAnalyserConfig(config),
+        options: { archiveScrapedArticle },
+      });
+    },
   } as const;
 
   const selectedUseCase = useCases[useCase as keyof typeof useCases];

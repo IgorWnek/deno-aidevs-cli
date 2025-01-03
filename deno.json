@@ -7,6 +7,7 @@
     "check": "deno fmt --check && deno lint"
   },
   "imports": {
+    "@mendable/firecrawl-js": "npm:@mendable/firecrawl-js@^1.11.0",
     "@std/assert": "jsr:@std/assert@1"
   },
   "fmt": {

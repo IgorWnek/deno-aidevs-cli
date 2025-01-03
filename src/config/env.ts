@@ -10,6 +10,7 @@ export interface EnvConfig {
   calibrationFileUrl: string;
   aiDevsApiKey: string;
   aiDevsVerificationUrl: string;
+  firecrawlApiKey: string;
   censorshipTaskUrl: string;
   auditionsTaskMp3sUrl: string;
   auditionsTaskName: string;
@@ -20,6 +21,10 @@ export interface EnvConfig {
   robotImageTaskName: string;
   filesFromFactoryTaskUrl: string;
   filesFromFactoryTaskName: string;
+  articleAnalyserDataUrl: string;
+  articleAnalyserArticlePath: string;
+  articleAnalyserQuestionsUrl: string;
+  articleAnalyserTaskName: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -35,6 +40,7 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     calibrationFileUrl: Deno.env.get('CALIBRATION_FILE_URL'),
     aiDevsApiKey: Deno.env.get('AI_DEVS_API_KEY'),
     aiDevsVerificationUrl: Deno.env.get('AI_DEVS_VERIFICATION_URL'),
+    firecrawlApiKey: Deno.env.get('FIRECRAWL_API_KEY'),
     censorshipTaskUrl: Deno.env.get('CENSORSHIP_TASK_URL'),
     auditionsTaskMp3sUrl: Deno.env.get('AUDITIONS_TASK_MP3S_URL'),
     auditionsTaskName: Deno.env.get('AUDITIONS_TASK_NAME'),
@@ -45,6 +51,10 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     robotImageTaskName: Deno.env.get('ROBOT_IMAGE_TASK_NAME'),
     filesFromFactoryTaskUrl: Deno.env.get('FILES_FROM_FACTORY_TASK_URL'),
     filesFromFactoryTaskName: Deno.env.get('FILES_FROM_FACTORY_TASK_NAME'),
+    articleAnalyserDataUrl: Deno.env.get('ARTICLE_ANALYSER_DATA_URL'),
+    articleAnalyserArticlePath: Deno.env.get('ARTICLE_ANALYSER_ARTICLE_PATH'),
+    articleAnalyserQuestionsUrl: Deno.env.get('ARTICLE_ANALYSER_QUESTIONS_URL'),
+    articleAnalyserTaskName: Deno.env.get('ARTICLE_ANALYSER_TASK_NAME'),
   };
 
   const missingVars = Object.entries(requiredVars)
