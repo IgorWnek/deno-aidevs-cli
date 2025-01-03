@@ -36,6 +36,7 @@ Deno.test({
       calibrationFileUrl: mockEnvVars.CALIBRATION_FILE_URL,
       aiDevsApiKey: mockEnvVars.AI_DEVS_API_KEY,
       aiDevsVerificationUrl: mockEnvVars.AI_DEVS_VERIFICATION_URL,
+      firecrawlApiKey: mockEnvVars.FIRECRAWL_API_KEY,
       censorshipTaskUrl: mockEnvVars.CENSORSHIP_TASK_URL,
       auditionsTaskMp3sUrl: mockEnvVars.AUDITIONS_TASK_MP3S_URL,
       auditionsTaskName: mockEnvVars.AUDITIONS_TASK_NAME,
