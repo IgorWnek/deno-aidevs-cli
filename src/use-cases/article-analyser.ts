@@ -28,7 +28,11 @@ export async function articleAnalyser({ config, options, crawlingService }: Arti
   const articleContent = await loadArticleContent(articlePath) ??
     await scrapeAndSaveArticle(crawlingService, fullUrl, articlePath);
 
-  console.log('Article content:', articleContent);
+  const mediaFiles = extractMediaFiles(articleContent);
+  console.log('\nFound media files:');
+  mediaFiles.forEach(file => console.log(`- ${file}`));
+
+  console.log('\nArticle content (first 200 chars):', articleContent.slice(0, 200));
 }
 
 async function loadArticleContent(path: string): Promise<string | null> {
@@ -51,4 +55,13 @@ async function scrapeAndSaveArticle(
   await Deno.writeTextFile(savePath, content);
   console.log('Article scraped and saved successfully');
   return content;
+}
+
+function extractMediaFiles(content: string): string[] {
+  const mediaRegex = /!\[.*?\]\((.*?)\)|(?:src=["'](.*?)["'])|(?:\[.*?\]\((.*?\.(?:jpg|jpeg|png|gif|mp3|wav))\))/gi;
+  const matches = [...content.matchAll(mediaRegex)]
+    .map(match => match[1] || match[2] || match[3])
+    .filter(Boolean); // Remove undefined/null values
+
+  return [...new Set(matches)]; // Remove duplicates
 }
