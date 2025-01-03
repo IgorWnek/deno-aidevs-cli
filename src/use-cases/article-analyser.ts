@@ -1,11 +1,11 @@
-import { EnvConfig } from '../config/env.ts';
+import { ArticleAnalyserConfig } from '../config/article-analyser-config.ts';
 
 type ArticleAnalyserOptions = {
   archiveScrapedArticle: boolean;
 }
 
 type ArticleAnalyserPayload = {
-  config: EnvConfig
+  config: ArticleAnalyserConfig
   options: ArticleAnalyserOptions
 }
 

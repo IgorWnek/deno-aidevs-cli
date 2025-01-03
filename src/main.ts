@@ -23,6 +23,7 @@ import { filesFromFactory } from './use-cases/files-from-factory.ts';
 import { ZipFilesService } from './services/zip-files-service.ts';
 import { FilesService } from './services/files-service.ts';
 import { articleAnalyser } from './use-cases/article-analyser.ts';
+import { createArticleAnalyserConfig } from './config/article-analyser-config.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -97,7 +98,7 @@ export async function main() {
     'article-analyser': (args: string[]) => {
       const archiveScrapedArticle = args.includes('-asa');
       return articleAnalyser({
-        config,
+        config: createArticleAnalyserConfig(config),
         options: { archiveScrapedArticle },
       });
     },
