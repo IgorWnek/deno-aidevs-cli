@@ -47,7 +47,8 @@ Deno.test({
       robotImageTaskName: mockEnvVars.ROBOT_IMAGE_TASK_NAME,
       filesFromFactoryTaskUrl: mockEnvVars.FILES_FROM_FACTORY_TASK_URL,
       filesFromFactoryTaskName: mockEnvVars.FILES_FROM_FACTORY_TASK_NAME,
-      articleAnalyserArticleUrl: mockEnvVars.ARTICLE_ANALYSER_ARTICLE_URL,
+      articleAnalyserDataUrl: mockEnvVars.ARTICLE_ANALYSER_DATA_URL,
+      articleAnalyserArticlePath: mockEnvVars.ARTICLE_ANALYSER_ARTICLE_PATH,
       articleAnalyserQuestionsUrl: mockEnvVars.ARTICLE_ANALYSER_QUESTIONS_URL,
       articleAnalyserTaskName: mockEnvVars.ARTICLE_ANALYSER_TASK_NAME,
     });

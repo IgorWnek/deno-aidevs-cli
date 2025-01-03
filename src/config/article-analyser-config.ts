@@ -1,14 +1,16 @@
 import { EnvConfig } from './env.ts';
 
 export interface ArticleAnalyserConfig {
-  articleUrl: string;
+  dataUrl: string;
+  articlePath: string;
   questionsUrl: string;
   taskName: string;
 }
 
 export function createArticleAnalyserConfig(envConfig: EnvConfig): ArticleAnalyserConfig {
   return {
-    articleUrl: envConfig.articleAnalyserArticleUrl,
+    dataUrl: envConfig.articleAnalyserDataUrl,
+    articlePath: envConfig.articleAnalyserArticlePath,
     questionsUrl: envConfig.articleAnalyserQuestionsUrl,
     taskName: envConfig.articleAnalyserTaskName,
   };

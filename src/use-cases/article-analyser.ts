@@ -24,8 +24,9 @@ export async function articleAnalyser({ config, options, crawlingService }: Arti
   console.log('--------------------------------');
 
   const articlePath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, SCRAPED_ARTICLE_FILENAME);
+  const fullUrl = `${config.dataUrl}${config.articlePath}`;
   const articleContent = await loadArticleContent(articlePath) ??
-    await scrapeAndSaveArticle(crawlingService, config.articleUrl, articlePath);
+    await scrapeAndSaveArticle(crawlingService, fullUrl, articlePath);
 
   console.log('Article content:', articleContent);
 }
