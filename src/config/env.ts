@@ -10,6 +10,7 @@ export interface EnvConfig {
   calibrationFileUrl: string;
   aiDevsApiKey: string;
   aiDevsVerificationUrl: string;
+  firecrawlApiKey: string;
   censorshipTaskUrl: string;
   auditionsTaskMp3sUrl: string;
   auditionsTaskName: string;
@@ -38,6 +39,7 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     calibrationFileUrl: Deno.env.get('CALIBRATION_FILE_URL'),
     aiDevsApiKey: Deno.env.get('AI_DEVS_API_KEY'),
     aiDevsVerificationUrl: Deno.env.get('AI_DEVS_VERIFICATION_URL'),
+    firecrawlApiKey: Deno.env.get('FIRECRAWL_API_KEY'),
     censorshipTaskUrl: Deno.env.get('CENSORSHIP_TASK_URL'),
     auditionsTaskMp3sUrl: Deno.env.get('AUDITIONS_TASK_MP3S_URL'),
     auditionsTaskName: Deno.env.get('AUDITIONS_TASK_NAME'),
