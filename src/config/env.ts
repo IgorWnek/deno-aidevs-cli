@@ -20,6 +20,9 @@ export interface EnvConfig {
   robotImageTaskName: string;
   filesFromFactoryTaskUrl: string;
   filesFromFactoryTaskName: string;
+  articleAnalyserArticleUrl: string;
+  articleAnalyserQuestionsUrl: string;
+  articleAnalyserTaskName: string;
 }
 
 export async function loadEnvConfig(): Promise<EnvConfig> {
@@ -45,6 +48,9 @@ export async function loadEnvConfig(): Promise<EnvConfig> {
     robotImageTaskName: Deno.env.get('ROBOT_IMAGE_TASK_NAME'),
     filesFromFactoryTaskUrl: Deno.env.get('FILES_FROM_FACTORY_TASK_URL'),
     filesFromFactoryTaskName: Deno.env.get('FILES_FROM_FACTORY_TASK_NAME'),
+    articleAnalyserArticleUrl: Deno.env.get('ARTICLE_ANALYSER_ARTICLE_URL'),
+    articleAnalyserQuestionsUrl: Deno.env.get('ARTICLE_ANALYSER_QUESTIONS_URL'),
+    articleAnalyserTaskName: Deno.env.get('ARTICLE_ANALYSER_TASK_NAME'),
   };
 
   const missingVars = Object.entries(requiredVars)
