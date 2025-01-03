@@ -1,3 +1,5 @@
+import { EnvConfig } from './env.ts';
+
 export interface ArticleAnalyserConfig {
   articleUrl: string;
   questionsUrl: string;
