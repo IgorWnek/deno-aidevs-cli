@@ -102,6 +102,7 @@ export async function main() {
       const archiveScrapedArticle = args.includes('-asa');
       return articleAnalyser({
         crawlingService,
+        anthropicChatClient,
         config: createArticleAnalyserConfig(config),
         options: { archiveScrapedArticle },
       });
