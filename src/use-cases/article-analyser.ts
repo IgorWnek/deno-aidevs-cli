@@ -25,17 +25,6 @@ const SCRAPED_ARTICLES_DIR = 'tmp/article-analyser';
 const SCRAPED_ARTICLE_FILENAME = 'scraped-article.md';
 const MEDIA_CONTEXTS_FILENAME = 'media-contexts.json';
 
-async function loadMediaContexts(): Promise<MediaContext[] | null> {
-  const contextsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_CONTEXTS_FILENAME);
-  try {
-    const content = await Deno.readTextFile(contextsPath);
-    console.log('Found existing media contexts, using cached version');
-    return JSON.parse(content);
-  } catch {
-    return null;
-  }
-}
-
 export async function articleAnalyser(
   { config, options, crawlingService, anthropicChatClient }: ArticleAnalyserPayload,
 ): Promise<void> {
@@ -93,6 +82,17 @@ function extractMediaFiles(content: string): string[] {
     .filter(Boolean); // Remove undefined/null values
 
   return [...new Set(matches)]; // Remove duplicates
+}
+
+async function loadMediaContexts(): Promise<MediaContext[] | null> {
+  const contextsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_CONTEXTS_FILENAME);
+  try {
+    const content = await Deno.readTextFile(contextsPath);
+    console.log('Found existing media contexts, using cached version');
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
 }
 
 async function generateMediaContexts(
