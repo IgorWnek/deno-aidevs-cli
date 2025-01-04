@@ -36,7 +36,9 @@ async function loadMediaContexts(): Promise<MediaContext[] | null> {
   }
 }
 
-export async function articleAnalyser({ config, options, crawlingService, anthropicChatClient }: ArticleAnalyserPayload): Promise<void> {
+export async function articleAnalyser(
+  { config, options, crawlingService, anthropicChatClient }: ArticleAnalyserPayload,
+): Promise<void> {
   console.log('Starting article analyser');
   console.log('--------------------------------');
   console.log('Enabled options:');
@@ -50,7 +52,7 @@ export async function articleAnalyser({ config, options, crawlingService, anthro
 
   const mediaFiles = extractMediaFiles(articleContent);
   console.log('\nFound media files:');
-  mediaFiles.forEach(file => console.log(`- ${file}`));
+  mediaFiles.forEach((file) => console.log(`- ${file}`));
 
   const mediaContexts = await loadMediaContexts() ??
     await generateAndSaveMediaContexts(mediaFiles, articleContent, anthropicChatClient);
@@ -87,7 +89,7 @@ async function scrapeAndSaveArticle(
 function extractMediaFiles(content: string): string[] {
   const mediaRegex = /!\[.*?\]\((.*?)\)|(?:src=["'](.*?)["'])|(?:\[.*?\]\((.*?\.(?:jpg|jpeg|png|gif|mp3|wav))\))/gi;
   const matches = [...content.matchAll(mediaRegex)]
-    .map(match => match[1] || match[2] || match[3])
+    .map((match) => match[1] || match[2] || match[3])
     .filter(Boolean); // Remove undefined/null values
 
   return [...new Set(matches)]; // Remove duplicates
