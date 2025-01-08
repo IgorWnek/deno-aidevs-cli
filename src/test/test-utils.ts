@@ -11,6 +11,7 @@ export const mockEnvVars = {
   CALIBRATION_FILE_URL: 'https://example.com/calibration.json',
   AI_DEVS_API_KEY: 'test-key',
   AI_DEVS_VERIFICATION_URL: 'https://test.com/verify',
+  FIRECRAWL_API_KEY: 'test-key',
   CENSORSHIP_TASK_URL: 'https://test.com/censorship',
   AUDITIONS_TASK_MP3S_URL: 'https://test.com/auditions',
   AUDITIONS_TASK_NAME: 'auditions',
@@ -21,6 +22,10 @@ export const mockEnvVars = {
   ROBOT_IMAGE_TASK_NAME: 'robot-image',
   FILES_FROM_FACTORY_TASK_URL: 'https://test.com/files-from-factory',
   FILES_FROM_FACTORY_TASK_NAME: 'files-from-factory',
+  ARTICLE_ANALYSER_QUESTIONS_URL: 'https://test.com/article-analyser-questions',
+  ARTICLE_ANALYSER_TASK_NAME: 'article-analyser',
+  ARTICLE_ANALYSER_DATA_URL: 'https://test.com/article-analyser-data',
+  ARTICLE_ANALYSER_ARTICLE_PATH: '/article/path',
 };
 
 export function withMockedEnv(fn: () => Promise<void>) {
@@ -69,6 +74,7 @@ export function getMockEnvConfig(): EnvConfig {
     calibrationFileUrl: 'https://test.com/calibration',
     aiDevsApiKey: 'test_ai_devs_key',
     aiDevsVerificationUrl: 'https://test.com/verify',
+    firecrawlApiKey: 'test_firecrawl_key',
     censorshipTaskUrl: 'https://test.com/censorship',
     auditionsTaskMp3sUrl: 'https://test.com/auditions',
     auditionsTaskName: 'auditions',
@@ -79,6 +85,10 @@ export function getMockEnvConfig(): EnvConfig {
     robotImageTaskName: 'robot-image',
     filesFromFactoryTaskUrl: 'https://test.com/files-from-factory',
     filesFromFactoryTaskName: 'files-from-factory',
+    articleAnalyserQuestionsUrl: 'https://test.com/article-analyser-questions',
+    articleAnalyserTaskName: 'article-analyser',
+    articleAnalyserDataUrl: 'https://test.com/article-analyser-data',
+    articleAnalyserArticlePath: '/article/path',
   };
 }
 

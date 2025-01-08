@@ -36,6 +36,7 @@ Deno.test({
       calibrationFileUrl: mockEnvVars.CALIBRATION_FILE_URL,
       aiDevsApiKey: mockEnvVars.AI_DEVS_API_KEY,
       aiDevsVerificationUrl: mockEnvVars.AI_DEVS_VERIFICATION_URL,
+      firecrawlApiKey: mockEnvVars.FIRECRAWL_API_KEY,
       censorshipTaskUrl: mockEnvVars.CENSORSHIP_TASK_URL,
       auditionsTaskMp3sUrl: mockEnvVars.AUDITIONS_TASK_MP3S_URL,
       auditionsTaskName: mockEnvVars.AUDITIONS_TASK_NAME,
@@ -46,6 +47,10 @@ Deno.test({
       robotImageTaskName: mockEnvVars.ROBOT_IMAGE_TASK_NAME,
       filesFromFactoryTaskUrl: mockEnvVars.FILES_FROM_FACTORY_TASK_URL,
       filesFromFactoryTaskName: mockEnvVars.FILES_FROM_FACTORY_TASK_NAME,
+      articleAnalyserDataUrl: mockEnvVars.ARTICLE_ANALYSER_DATA_URL,
+      articleAnalyserArticlePath: mockEnvVars.ARTICLE_ANALYSER_ARTICLE_PATH,
+      articleAnalyserQuestionsUrl: mockEnvVars.ARTICLE_ANALYSER_QUESTIONS_URL,
+      articleAnalyserTaskName: mockEnvVars.ARTICLE_ANALYSER_TASK_NAME,
     });
   },
   sanitizeOps: false,
