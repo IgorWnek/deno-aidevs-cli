@@ -26,6 +26,7 @@ import { articleAnalyser } from './use-cases/article-analyser.ts';
 import { createArticleAnalyserConfig } from './config/article-analyser-config.ts';
 import { FirecrawlService } from './services/crawling-service.ts';
 import { createFirecrawlConfig } from './config/firecrawl-config.ts';
+import { AnthropicMediaDescriptionService } from './services/media-description-service.ts';
 
 export class UseCaseError extends Error {
   constructor(message: string) {
@@ -100,9 +101,15 @@ export async function main() {
       }),
     'article-analyser': (args: string[]) => {
       const archiveScrapedArticle = args.includes('-asa');
+      const mediaDescriptionService = new AnthropicMediaDescriptionService(
+        anthropicChatClient,
+        openAiAudioClient,
+      );
+
       return articleAnalyser({
         crawlingService,
         anthropicChatClient,
+        mediaDescriptionService,
         config: createArticleAnalyserConfig(config),
         options: { archiveScrapedArticle },
       });

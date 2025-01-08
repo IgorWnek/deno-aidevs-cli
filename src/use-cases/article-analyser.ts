@@ -4,6 +4,7 @@ import { ensureDir } from 'https://deno.land/std/fs/ensure_dir.ts';
 import { join } from 'https://deno.land/std/path/mod.ts';
 import { AnthropicClient } from '../ai-clients/anthropic-ai-chat-client.ts';
 import { MEDIA_CONTEXT_PROMPT, MEDIA_CONTEXT_USER_PROMPT } from '../prompts/media-context.ts';
+import { MediaDescriptionService } from '../services/media-description-service.ts';
 
 type ArticleAnalyserOptions = {
   archiveScrapedArticle: boolean;
@@ -14,6 +15,7 @@ type ArticleAnalyserPayload = {
   options: ArticleAnalyserOptions;
   crawlingService: CrawlingService;
   anthropicChatClient: AnthropicClient;
+  mediaDescriptionService: MediaDescriptionService;
 };
 
 interface MediaContext {
@@ -21,12 +23,18 @@ interface MediaContext {
   context: string;
 }
 
+interface MediaDetails {
+  path: string;
+  context: string;
+  description: string;
+}
+
 const SCRAPED_ARTICLES_DIR = 'tmp/article-analyser';
 const SCRAPED_ARTICLE_FILENAME = 'scraped-article.md';
-const MEDIA_CONTEXTS_FILENAME = 'media-contexts.json';
+const MEDIA_DETAILS_FILENAME = 'media-details.json';
 
 export async function articleAnalyser(
-  { config, options, crawlingService, anthropicChatClient }: ArticleAnalyserPayload,
+  { config, options, crawlingService, anthropicChatClient, mediaDescriptionService }: ArticleAnalyserPayload,
 ): Promise<void> {
   console.log('Starting article analyser');
   console.log('--------------------------------');
@@ -43,13 +51,18 @@ export async function articleAnalyser(
   console.log('\nFound media files:');
   mediaFiles.forEach((file) => console.log(`- ${file}`));
 
-  const mediaContexts = await loadMediaContexts() ??
-    await generateAndSaveMediaContexts(mediaFiles, articleContent, anthropicChatClient);
+  const mediaDetails = await loadMediaDetails() ?? await (async () => {
+    const mediaContexts = await generateMediaContexts(mediaFiles, articleContent, anthropicChatClient);
+    const details = await generateMediaDescriptions(mediaContexts, mediaDescriptionService, config);
+    await saveMediaDetails(details);
+    return details;
+  })();
 
-  console.log('\nMedia contexts:');
-  mediaContexts.forEach(({ path, context }) => {
+  console.log('\nMedia details:');
+  mediaDetails.forEach(({ path, context, description }) => {
     console.log(`\n${path}:`);
-    console.log(context);
+    console.log('Context:', context);
+    console.log('Description:', description);
   });
 }
 
@@ -84,11 +97,11 @@ function extractMediaFiles(content: string): string[] {
   return [...new Set(matches)]; // Remove duplicates
 }
 
-async function loadMediaContexts(): Promise<MediaContext[] | null> {
-  const contextsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_CONTEXTS_FILENAME);
+async function loadMediaDetails(): Promise<MediaDetails[] | null> {
+  const detailsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_DETAILS_FILENAME);
   try {
-    const content = await Deno.readTextFile(contextsPath);
-    console.log('Found existing media contexts, using cached version');
+    const content = await Deno.readTextFile(detailsPath);
+    console.log('Found existing media details, using cached version');
     return JSON.parse(content);
   } catch {
     return null;
@@ -122,19 +135,31 @@ async function generateMediaContexts(
   return await Promise.all(contextPromises);
 }
 
-async function saveMediaContexts(mediaContexts: MediaContext[]): Promise<void> {
-  const contextsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_CONTEXTS_FILENAME);
-  await Deno.writeTextFile(contextsPath, JSON.stringify(mediaContexts, null, 2));
-  console.log(`\nMedia contexts saved to ${MEDIA_CONTEXTS_FILENAME}`);
+async function saveMediaDetails(mediaDetails: MediaDetails[]): Promise<void> {
+  const detailsPath = join(Deno.cwd(), SCRAPED_ARTICLES_DIR, MEDIA_DETAILS_FILENAME);
+  await Deno.writeTextFile(detailsPath, JSON.stringify(mediaDetails, null, 2));
+  console.log(`\nMedia details saved to ${MEDIA_DETAILS_FILENAME}`);
 }
 
-async function generateAndSaveMediaContexts(
-  mediaFiles: string[],
-  articleContent: string,
-  aiClient: AnthropicClient,
-): Promise<MediaContext[]> {
-  console.log('\nGenerating context for media files...');
-  const mediaContexts = await generateMediaContexts(mediaFiles, articleContent, aiClient);
-  await saveMediaContexts(mediaContexts);
-  return mediaContexts;
+async function generateMediaDescriptions(
+  mediaContexts: MediaContext[],
+  mediaDescriptionService: MediaDescriptionService,
+  config: ArticleAnalyserConfig,
+): Promise<MediaDetails[]> {
+  console.log('\nGenerating descriptions for media files...');
+
+  const detailsPromises = mediaContexts.map(async ({ path, context }): Promise<MediaDetails> => {
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    const fullMediaUrl = `${config.dataUrl}/${normalizedPath}`;
+    console.log(`Processing media: ${fullMediaUrl}`);
+
+    const description = await mediaDescriptionService.createDescription(fullMediaUrl, context);
+    return {
+      path,
+      context,
+      description,
+    };
+  });
+
+  return await Promise.all(detailsPromises);
 }
